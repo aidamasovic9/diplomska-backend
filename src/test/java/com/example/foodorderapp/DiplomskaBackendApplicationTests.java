@@ -1,4 +1,4 @@
-package com.example.diplomskabackend;
+package com.example.foodorderapp;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
