@@ -1,0 +1,54 @@
+.restaurant-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    padding: 20px;
+}
+
+.restaurant-card {
+    width: 250px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+h2 {
+    margin: 10px 0;
+    font-size: 18px;
+    color: #333;
+}
+
+p {
+    padding: 0 10px;
+    color: #666;
+}
+
+/* styles.css */
+.card {
+    width: 250px;
+    padding: 0;
+    height: fit-content;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    padding: 0 !important;
+}
+
+.text-container {
+    margin-left: 10px;
+}
+
+.select-button {
+    width: 30%;
+    align-self: end;
+}
+
+.grid {
+    display: flex;
+    flex-direction: column;
+}

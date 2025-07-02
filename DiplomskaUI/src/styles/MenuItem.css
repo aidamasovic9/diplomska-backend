@@ -1,0 +1,40 @@
+.menuItemCard .menuItemCardMedia {
+    width: 150px;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+    margin-left: 5px;
+    padding-bottom: 5px;
+}
+
+.menuItemCard {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.menuItemCard .menuItemCardContent {
+    width: 100%;
+}
+
+.menuItemCard .menuItemCardAction {
+    display: flex;
+    justify-content: center;
+    width: 20%;
+}
+
+.menuItemSelectButton {
+    background-color: #007bff;
+    color: white;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    text-transform: none;
+    width: 80%;
+}
+
+.select-button:hover {
+    background-color: #0056b3;
+}

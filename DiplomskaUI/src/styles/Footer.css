@@ -1,0 +1,19 @@
+.app-footer {
+    background-color: #040066;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    bottom: 0;
+    justify-content: center;
+    color: white;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.footer-title {
+    font-size: 24px;
+    font-weight: bold;
+}

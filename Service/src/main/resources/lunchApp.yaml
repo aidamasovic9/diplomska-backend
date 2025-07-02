@@ -1,0 +1,120 @@
+openapi: 3.0.3
+info:
+  title: My API
+  version: 1.0.0
+  description: API documentation for my application
+
+servers:
+  - url: http://localhost:8080/api
+    description: Local development server
+
+paths:
+  /users:
+    get:
+      summary: Get all users
+      operationId: getUsers
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserResponse'
+
+    post:
+      summary: Create a user
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '201':
+          description: User created
+  /restaurants:
+    get:
+      summary: Get all restaurants
+      operationId: getUsers
+      responses:
+        '200':
+          description: List of restaurants
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RestaurantResponse'
+
+components:
+  schemas:
+    UserRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        shortName:
+          type: string
+        image:
+          type: string
+
+    UserResponse:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        password:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        shortName:
+          type: string
+        image:
+          type: string
+          format: byte
+
+    RestaurantResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        city:
+          type: string
+        shifts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ShiftResponse'
+
+    ShiftResponse:
+      type: object
+      properties:
+        name:
+          type: string
+        occupiedPlaces:
+          type: integer
+          format: int32
+        maximumGuests:
+          type: integer
+          format: int32
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserResponse'
