@@ -4,13 +4,13 @@ import com.example.entity.Restaurant;
 import com.example.mapper.RestaurantMapper;
 import com.example.model.output.RestaurantOutputDto;
 import com.example.repository.RestaurantRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class RestaurantService {
   private final RestaurantRepository restaurantRepository;
   private final RestaurantMapper restaurantMapper;

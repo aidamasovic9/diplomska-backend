@@ -1,14 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-interface CartItem {
-    id: string;
-    image: string;
-    title: string;
-    description: string;
-}
+import { MealResponse } from '../../api/generated/model/meal-response.ts';
 
 interface CartState {
-    item: CartItem | null; // Only one item allowed
+    item: MealResponse | null; // Only one item allowed
 }
 
 const initialState: CartState = {
@@ -19,7 +13,7 @@ const cartSlice = createSlice({
     name: "cart",
     initialState,
     reducers: {
-        addItem: (state, action: PayloadAction<CartItem>) => {
+        addItem: (state, action: PayloadAction<MealResponse>) => {
             state.item = action.payload; // Always replace with the new item
         },
         removeItem: (state) => {

@@ -9,9 +9,15 @@ import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
 import {TransitionProps} from "@mui/material/transitions";
 import {ButtonGroup, Slide} from "@mui/material";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import MenuListPage from './MenuListPage.tsx';
 import OrderSummary from "./OrderSummary.tsx";
+import { CategoryResponse } from '../../api/generated/model/category-response.ts';
+import { Meal } from '../../api/index.ts';
+import { HttpStatusCode } from "axios";
+import { MealResponse } from '../../api/generated/model/meal-response.ts';
+import { categoryIconMap } from '../../../src/util.ts';
+import { ShiftResponse } from '../../api/generated/model/shift-response.ts';
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -25,27 +31,42 @@ const Transition = React.forwardRef(function Transition(
 interface FoodPageProps {
     open: boolean;
     handleClose: () => void;
-    sections: {
-        title: string;
-        food: {
-            id: string;
-            image: string;
-            title: string;
-            description: string;
-        }[];
-        Icon: React.ElementType;
-    }[];
+    categories: CategoryResponse[] | undefined;
+    restaurantId: string | undefined;
+    shifts: ShiftResponse[] | undefined;
 }
 
-const MainOrderPage: React.FC<FoodPageProps> = ({ open, handleClose, sections }) => {
+const MainOrderPage: React.FC<FoodPageProps> = ({ open, handleClose, categories, restaurantId, shifts }) => {
 
     const [selectedIndex, setSelectedIndex] = useState(0);
-    const [selectedSection, setSelectedSection] = useState(sections[0]);
+    const [food, setFood] = useState<MealResponse[] |  undefined>(undefined);
 
-    const handleButtonClick = (index: number) => {
+    const handleButtonClick = async (index: number) => {
         setSelectedIndex(index);
-        setSelectedSection(sections[index]);
+        const newSelectedSection = categories?.[index] ?? null;
+        await fetchCategories(newSelectedSection);
     };
+
+
+    const fetchCategories = async (category: CategoryResponse | null) => {
+        if (category?.id != null) {
+            const response = await Meal.getMealsByCategory(category.id);
+            if (response.status === HttpStatusCode.Ok) {
+                setFood(response.data.meals);
+            }
+        }
+    };
+
+    useEffect(() => {
+        if (open && categories && categories.length > 0) {
+            fetchCategories(categories[0]);
+        } else if (!open) {
+            setSelectedIndex(0);
+            setFood(undefined);
+        }
+    }, [open, categories]);
+
+
     return (
             <Dialog
                 fullScreen
@@ -53,7 +74,7 @@ const MainOrderPage: React.FC<FoodPageProps> = ({ open, handleClose, sections })
                 onClose={handleClose}
                 TransitionComponent={Transition}
             >
-                <AppBar sx={{ position: 'sticky', backgroundColor: '#040066', top: 0, zIndex: 1000 }}>
+                <AppBar sx={{ position: 'sticky', backgroundColor: '#040066', top: 0, zIndex: 1200 }}>
                     <Toolbar>
                         <IconButton
                             edge="start"
@@ -72,18 +93,21 @@ const MainOrderPage: React.FC<FoodPageProps> = ({ open, handleClose, sections })
                     </Toolbar>
                 </AppBar>
                 <ButtonGroup className='menuButtons' variant="text" aria-label="Basic button group">
-                    {sections.map((section, index) => (
-                        <Button
-                            key={index}
-                            onClick={() => handleButtonClick(index)}
-                            className={selectedIndex === index ? 'selectedBtn' : 'unselectedBtn'}>
-                            {section.title} <section.Icon />
-                        </Button>))}
+                    {categories?.map((section, index) => {
+                        const Icon = categoryIconMap[section.name ?? 'default'] || categoryIconMap['default'];
+                        return (
+                            <Button
+                                key={index}
+                                onClick={() => handleButtonClick(index)}
+                                className={selectedIndex === index ? 'selectedBtn' : 'unselectedBtn'}
+                            >{section.name} <Icon/>
+                            </Button>
+                        );
+                })}
                 </ButtonGroup>
                 <div className="grid">
-                <MenuListPage
-                    items={selectedSection.food} />
-                <OrderSummary/>
+                <MenuListPage meals={food} />
+                <OrderSummary restaurantId={restaurantId} shifts={shifts}/>
                 </div>
             </Dialog>
     );

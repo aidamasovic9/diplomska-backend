@@ -2,20 +2,16 @@ import * as React from "react";
 
 import '../../styles/MenuSection.css';
 import MenuItem from "./MenuItem.tsx";
+import { MealResponse } from '../../api/generated/model/meal-response.ts';
 
-interface MenuItemsProps {
-    items: {
-        id: string;
-        image: string;
-        title: string;
-        description: string;
-    }[];
-}
+type MenuListPageProps = {
+    meals: MealResponse[] | undefined;
+};
 
-const MenuListPage: React.FC<MenuItemsProps> = ({items}) => {
+const MenuListPage: React.FC<MenuListPageProps> = ({meals}: MenuListPageProps) => {
     return (
         <div className='menuDiv'>
-            {items.map(item => <MenuItem item={item}/>)}
+            {meals?.map(item => <MenuItem item={item} key={item.id}/>)}
         </div>
     );
 };

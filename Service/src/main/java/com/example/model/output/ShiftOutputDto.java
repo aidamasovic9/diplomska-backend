@@ -10,6 +10,7 @@ import java.util.List;
 @Setter
 @ToString
 public class ShiftOutputDto {
+  private String id;
   private String name;
   private Integer occupiedPlaces = 0;
   private Integer maximumGuests;

@@ -12,6 +12,6 @@ import java.util.List;
 public class RestaurantInputDto {
   private String name;
   private String city;
-  private byte[] photo;
+  private String photo;
   private List<ShiftInputDto> shifts;
 }

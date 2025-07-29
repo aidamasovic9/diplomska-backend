@@ -40,10 +40,21 @@ public class Order {
   @JoinColumn(name = "MEAL_ID", nullable = false)
   private Meal meal;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "RESTAURANT_ID", nullable = false)
+  private Restaurant restaurant;
+
   @ManyToOne
   @JoinColumn(name = "SHIFT_ID", nullable = false)
   private Shift shift;
 
   @Column(name = "ORDER_DATE")
   private LocalDate orderDate;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "EAT_IN_OR_TAKE_AWAY")
+  private EatInTakeAway eatInTakeAway;
+
+  @Column(name = "COMMENT")
+  private String comment;
 }

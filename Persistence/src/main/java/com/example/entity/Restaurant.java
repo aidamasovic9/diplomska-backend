@@ -37,9 +37,8 @@ public class Restaurant {
   @Column(name = "CITY")
   private String city;
 
-  @Lob
-  @Column(name = "PHOTO")
-  private byte[] photo;
+  @Column(name = "IMAGE")
+  private String image;
 
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
   @JoinColumn(name = "RESTAURANT_ID")
@@ -47,5 +46,5 @@ public class Restaurant {
 
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
   @JoinColumn(name = "RESTAURANT_ID")
-  private List<Meal> meals;
+  private List<MealCategory> categories;
 }

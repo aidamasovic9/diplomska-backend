@@ -4,19 +4,14 @@ import com.example.entity.User;
 import com.example.model.input.UserInputDto;
 import com.example.model.output.UserOutputDto;
 import org.mapstruct.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Mapper(componentModel = "spring")
-public abstract class UserMapper {
+@Mapper(componentModel = "spring", uses = { PasswordMappingHelper.class})
+public interface UserMapper {
 
-  @Autowired
-  protected PasswordEncoder passwordEncoder;
+  UserOutputDto toUserOutputDto(User user);
 
-  public abstract UserOutputDto toUserOutputDto(User user);
-
-  @Mapping(target = "password", expression = "java(passwordEncoder.encode(dto.getPassword()))")
+  @Mapping(target = "password", source = "password", qualifiedByName = "encodeUserPassword")
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "authorities", ignore = true)
-  public abstract User mapToEntity(UserInputDto dto, @MappingTarget User user);
+  User mapToEntity(UserInputDto dto, @MappingTarget User user);
 }

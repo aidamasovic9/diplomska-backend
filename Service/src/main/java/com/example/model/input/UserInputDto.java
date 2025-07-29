@@ -13,6 +13,6 @@ public class UserInputDto {
   private String email;
   private String shortName;
   private String password;
-  private byte[] image;
+  private String image;
   private UserRole role;
 }

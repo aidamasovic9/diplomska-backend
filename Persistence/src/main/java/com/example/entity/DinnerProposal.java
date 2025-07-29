@@ -34,7 +34,7 @@ public class DinnerProposal {
   private Long id;
 
   @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  @JoinColumn(name = "USER_ID", nullable = false)
+  @JoinColumn(name = "INITIATOR_USER_ID", nullable = false)
   private User initiator;
 
   @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

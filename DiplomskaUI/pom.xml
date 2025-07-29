@@ -17,4 +17,33 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <build>
+        <resources>
+            <resource>
+                <directory>${project.build.directory}/generated-sources</directory>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>7.6.0</version>
+                <executions>
+                    <execution>
+                        <id>openapi-generator-maven-plugin - generate typescript interfaces and api-clients</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/../Service/src/main/resources/lunchApp.yaml</inputSpec>
+                            <output>./src/api/generated</output>
+                            <generatorName>typescript-axios</generatorName>
+                            <additionalProperties>supportsES6=true,withInterfaces=true,withSeparateModelsAndApi=true,apiPackage=api,modelPackage=model</additionalProperties>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

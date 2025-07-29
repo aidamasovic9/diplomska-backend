@@ -20,7 +20,7 @@ public class UserService implements UserDetailsService {
   private final UserRepository userRepository;
   private final UserMapper userServiceMapper;
 
-  public UserOutputDto createOrUpdateUser(UserInputDto dto) {
+  public void createOrUpdateUser(UserInputDto dto) {
     User user = new User();
     Optional<User> optionalUser = userRepository.findByEmail(dto.getEmail());
     if (optionalUser.isPresent()) {
@@ -29,8 +29,6 @@ public class UserService implements UserDetailsService {
 
     User newUser = userServiceMapper.mapToEntity(dto, user);
     userRepository.save(newUser);
-
-    return userServiceMapper.toUserOutputDto(newUser);
   }
 
   public UserOutputDto getUserById(Long id) {

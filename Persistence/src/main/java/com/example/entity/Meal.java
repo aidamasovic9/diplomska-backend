@@ -35,10 +35,12 @@ public class Meal {
   @Column(name = "NAME")
   private String name;
 
-  @Lob
-  @Column(name = "PHOTO")
-  private byte[] photo;
+  @Column(name = "IMAGE")
+  private String image;
 
   @Column(name = "AVG_RATING")
   private BigDecimal avgRating;
+
+  @Column(name = "DESCRIPTION")
+  private String description;
 }

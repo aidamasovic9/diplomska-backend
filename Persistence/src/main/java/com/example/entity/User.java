@@ -50,9 +50,8 @@ public class User implements UserDetails {
   @Column(name = "ROLE")
   private UserRole role;
 
-  @Lob
   @Column(name = "IMAGE")
-  private byte[] image;
+  private String image;
 
   @Column(name = "SHORTNAME", length = 4)
   private String shortName;

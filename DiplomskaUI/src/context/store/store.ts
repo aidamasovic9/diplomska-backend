@@ -1,9 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
-import cartReducer from "./cartSlice"; // Import the reducer we will create
+import cartReducer from "./cartSlice";
+import restaurantReducer from "./restaurantSlice";
+import fastOrdersReducer from "./fastOrdersSlice";
 
 const store = configureStore({
     reducer: {
-        cart: cartReducer, // Add cart reducer to store
+        cart: cartReducer,
+        restaurants: restaurantReducer,
+        fastOrders: fastOrdersReducer,
     },
 });
 

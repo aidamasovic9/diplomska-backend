@@ -1,18 +1,31 @@
+import * as React from "react";
+
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../context/store/store";
 import { removeItem } from "../../context/store/cartSlice";
 import Button from "@mui/material/Button";
-import {FormControl, InputLabel, MenuItem, Select, TextField} from "@mui/material";
+import {Alert, FormControl, InputLabel, MenuItem, Select, Snackbar, TextField} from "@mui/material";
 import {Field, Form} from "react-final-form";
+import { Order } from '../../api/index.ts';
+import { OrderFormValues, prepareOrderRequest } from '../../../src/util.ts';
+import { useState } from "react";
+import { ShiftResponse } from '../../api/generated/model/shift-response.ts';
 
-const OrderSummary: React.FC = () => {
+interface OrderSummaryProps {
+    restaurantId: string | undefined;
+    shifts: ShiftResponse[] | undefined;
+}
+
+const OrderSummary: React.FC<OrderSummaryProps> = ({ restaurantId, shifts }) => {
     const cartItem = useSelector((state: RootState) => state.cart.item);
     const dispatch = useDispatch();
-    const availableShifts = ['11:00', '12:00','13:15'];
+    const [showSnackbarMessage, setShowSnackbarMessage] = useState(false);
 
-    const onSubmit = () => {
-        console.log("Submitting order:");
-        // Dispatch or call API here
+    const onSubmit = async (values: OrderFormValues) => {
+        if (cartItem && restaurantId) {
+            await Order.createOrder("1", prepareOrderRequest(values, cartItem, restaurantId));
+            setShowSnackbarMessage(true);
+        }
     };
 
     return (
@@ -24,7 +37,7 @@ const OrderSummary: React.FC = () => {
                     render={({ handleSubmit }) => (
                         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                <span>{cartItem.title}</span>
+                                <h4>{cartItem.name}</h4>
                                 <Button
                                     variant="contained"
                                     color="error"
@@ -40,9 +53,9 @@ const OrderSummary: React.FC = () => {
                                     <FormControl fullWidth error={meta.touched && meta.error}>
                                         <InputLabel>Shift</InputLabel>
                                         <Select {...input} label="Shift">
-                                            {availableShifts.map((shift) => (
-                                                <MenuItem key={shift} value={shift.toLowerCase()}>
-                                                    {shift}
+                                            {shifts && shifts.map((shift) => (
+                                                <MenuItem key={shift.id} value={shift.id}>
+                                                    {shift.name}
                                                 </MenuItem>
                                             ))}
                                         </Select>
@@ -50,13 +63,13 @@ const OrderSummary: React.FC = () => {
                                 )}
                             </Field>
 
-                            <Field name="eatInOrTakeaway" >
+                            <Field name="eatInOrTakeAway" >
                                 {({ input, meta }) => (
                                     <FormControl fullWidth error={meta.touched && meta.error}>
                                         <InputLabel>Eat In or Takeaway</InputLabel>
                                         <Select {...input} label="Eat In or Takeaway">
-                                            <MenuItem value="eat-in">Eat In</MenuItem>
-                                            <MenuItem value="takeaway">Takeaway</MenuItem>
+                                            <MenuItem value="EAT_IN">Eat In</MenuItem>
+                                            <MenuItem value="TAKE_AWAY">Takeaway</MenuItem>
                                         </Select>
                                     </FormControl>
                                 )}
@@ -85,6 +98,16 @@ const OrderSummary: React.FC = () => {
             ) : (
                 <p>No item in cart</p>
             )}
+            <Snackbar open={showSnackbarMessage} autoHideDuration={6000} onClose={() => setShowSnackbarMessage(false)}>
+                <Alert
+                    onClose={() => setShowSnackbarMessage(false)}
+                    severity="success"
+                    variant="filled"
+                    sx={{ width: '100%' }}
+                >
+                    Successfully added order!
+                </Alert>
+            </Snackbar>
         </div>
     );
 };

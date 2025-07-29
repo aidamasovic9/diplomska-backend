@@ -1,15 +1,11 @@
 import * as React from "react";
 import { Accordion, AccordionSummary, AccordionDetails, Typography } from '@mui/material';
 import '../../styles/SectionDetails.css';
-import {useState} from "react";
+import { useState } from "react";
+import { ShiftResponse } from '../../api/generated/model/shift-response';
 
 interface AccordionDetailsProps {
-    shifts: {
-        title: string;
-        content: string;
-        isFull: boolean;
-        personImage?: string;
-    }[];
+    shifts: ShiftResponse[] | undefined;
 }
 
 const ShiftDetailsComponent: React.FC<AccordionDetailsProps> = ({ shifts }) => {
@@ -19,25 +15,37 @@ const ShiftDetailsComponent: React.FC<AccordionDetailsProps> = ({ shifts }) => {
         setExpandedShift((prev) => (prev === index ? null : index));
     };
 
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
     return (
         <div style={{ width: '100%'}}>
-            {shifts.map((shift, index) => (
+            {shifts?.map((shift, index) => (
                 <Accordion key={index}
                            expanded={expandedShift === index}
                            onChange={() => handleAccordionToggle(index)}
                            style={{
-                               backgroundColor: shift.isFull ? '#e0e0e0' : 'transparent',
+                               backgroundColor: shift.occupiedPlaces === shift.maximumGuests ? '#e0e0e0' : 'transparent',
                            }}>
-                    <AccordionSummary expandIcon={null} aria-controls={`${shift.title}-content`} id={`${shift.title}-header`}>
-                        <Typography>{shift.title}</Typography>
-                        {shift.personImage && <img
-                            src={shift.personImage}
-                            alt={shift.title}
-                            className="person-image"
-                        />}
+                    <AccordionSummary expandIcon={null} aria-controls={`${shift.name}-content`} id={`${shift.name}-header`}>
+                        <Typography>{shift.name}</Typography>
+                        {shift?.users?.map((user, index) => (
+                            <img
+                                src={`${baseUrl}/images/${user.image}`}
+                                alt={user.shortName}
+                                className="person-image"
+                                key={index}
+                            />
+                        ))}
                     </AccordionSummary>
                     <AccordionDetails>
-                        <Typography>{shift.content}</Typography>
+                        <Typography>{shift?.users?.map((user, index) => (
+                            <img
+                                src={`${baseUrl}/images/${user.image}`}
+                                alt={user.shortName}
+                                className="person-image"
+                                key={index}
+                            />
+                        ))}</Typography>
                     </AccordionDetails>
                 </Accordion>
             ))}

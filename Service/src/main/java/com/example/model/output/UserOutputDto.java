@@ -13,5 +13,5 @@ public class UserOutputDto {
   private String lastName;
   private String email;
   private String shortName;
-  private byte[] image;
+  private String image;
 }

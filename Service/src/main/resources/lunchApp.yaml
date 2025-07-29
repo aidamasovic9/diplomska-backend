@@ -9,10 +9,12 @@ servers:
     description: Local development server
 
 paths:
-  /users:
+  '/users':
     get:
       summary: Get all users
       operationId: getUsers
+      tags:
+        - User
       responses:
         '200':
           description: List of users
@@ -22,10 +24,11 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/UserResponse'
-
     post:
       summary: Create a user
       operationId: createUser
+      tags:
+        - User
       requestBody:
         required: true
         content:
@@ -35,10 +38,18 @@ paths:
       responses:
         '201':
           description: User created
-  /restaurants:
+  '/restaurants/{city}':
     get:
       summary: Get all restaurants
-      operationId: getUsers
+      operationId: getRestaurants
+      tags:
+        - Restaurant
+      parameters:
+        - name: city
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: List of restaurants
@@ -48,7 +59,184 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/RestaurantResponse'
-
+  '/restaurants':
+    post:
+      summary: Creates a new restaurant
+      operationId: createRestaurant
+      tags:
+        - Restaurant
+      requestBody:
+        required: true
+        description: Create restaurant input model
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RestaurantRequest'
+      responses:
+        '200':
+          description: Restaurant created successfully
+    delete:
+      summary: Deletes a restaurant
+      operationId: deleteRestaurant
+      tags:
+        - Restaurant
+      parameters:
+        - name: restaurantId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+        '404':
+          description: Restaurant or category not found
+  '/meals/{categoryId}':
+    get:
+      summary: Get meals in a category for a restaurant
+      operationId: getMealsByCategory
+      tags:
+        - Meal
+      parameters:
+        - name: categoryId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuByCategory'
+        '404':
+          description: Restaurant or category not found
+  '/order/{userId}/fast-orders':
+    get:
+      summary: Get fast orders for a given user
+      operationId: getFastOrders
+      tags:
+        - Order
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FastOrdersResponse'
+  '/order/{userId}':
+    post:
+      summary: Creates order for a given user and meal
+      operationId: createOrder
+      tags:
+        - Order
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        description: Create order input model
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+        '404':
+          description: Restaurant or category not found
+    get:
+      summary: Get order for a given user
+      operationId: getOrder
+      tags:
+        - Order
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+           type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrderResponse'
+    delete:
+      summary: Delete order for given user
+      operationId: deleteOrder
+      tags:
+        - Order
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+  '/dinner-proposal/{userId}':
+    get:
+      summary: Dinner proposal for the user
+      operationId: getDinnerProposal
+      tags:
+        - DinnerProposal
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Group dinner proposal for this user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupDinnerProposalResponse'
+    post:
+      summary: Propose a group dinner
+      operationId: proposeGroupDinner
+      tags:
+        - DinnerProposal
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        description: Create order input model
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupDinnerProposalRequest'
+      responses:
+        '200':
+          description: Group dinner proposals for this user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupDinnerProposalResponse'
 components:
   schemas:
     UserRequest:
@@ -66,6 +254,8 @@ components:
           type: string
         image:
           type: string
+        password:
+          type: string
 
     UserResponse:
       type: object
@@ -77,8 +267,6 @@ components:
           type: integer
         email:
           type: string
-        password:
-          type: string
         firstName:
           type: string
         lastName:
@@ -87,7 +275,6 @@ components:
           type: string
         image:
           type: string
-          format: byte
 
     RestaurantResponse:
       type: object
@@ -98,23 +285,181 @@ components:
           type: string
         city:
           type: string
+        image:
+          type: string
         shifts:
           type: array
           items:
             $ref: '#/components/schemas/ShiftResponse'
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/CategoryResponse'
+    CategoryResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+    RestaurantRequest:
+      type: object
+      properties:
+        userId:
+          type: string
+        name:
+          type: string
+        city:
+          type: string
+        image:
+          type: string
+        shifts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ShiftRequest'
+        categories:
+          type: array
+          items:
+            type: string
 
-    ShiftResponse:
+    ShiftRequest:
       type: object
       properties:
         name:
           type: string
-        occupiedPlaces:
-          type: integer
-          format: int32
         maximumGuests:
           type: integer
-          format: int32
+          format: number
+
+    ShiftResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        occupiedPlaces:
+          type: integer
+          format: number
+        maximumGuests:
+          type: integer
+          format: number
         users:
           type: array
           items:
             $ref: '#/components/schemas/UserResponse'
+
+    MenuByCategory:
+      type: object
+      properties:
+        categoryId:
+          type: integer
+          format: int32
+        meals:
+          type: array
+          items:
+            $ref: '#/components/schemas/MealResponse'
+
+    MealResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        image:
+          type: string
+        avgRating:
+          type: string
+          format: decimal
+        description:
+          type: string
+
+    OrderRequest:
+      type: object
+      properties:
+        restaurantId:
+          type: string
+        mealId:
+          type: string
+        shiftId:
+          type: string
+        comment:
+          type: string
+        fastOrder:
+          type: boolean
+        eatInOrTakeAway:
+          type: string
+          enum: [ EAT_IN, TAKE_AWAY ]
+
+    OrderResponse:
+      type: object
+      properties:
+        orderId:
+          type: string
+        restaurantName:
+          type: string
+        mealImage:
+          type: string
+        mealName:
+          type: string
+        shiftName:
+          type: string
+        comment:
+          type: string
+        orderDate:
+          type: string
+    FastOrdersResponse:
+      type: object
+      properties:
+        orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderResponse'
+
+    InvitedPerson:
+      type: object
+      properties:
+        name:
+          type: string
+        shortName:
+          type: string
+        id:
+          type: string
+        image:
+          type: string
+        status:
+          enum:
+            - ACCEPTED
+            - PENDING
+            - DECLINED
+
+    GroupDinnerProposalResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - PENDING
+            - CONFIRMED
+            - CANCELLED
+            - INVITED
+            - TO_BE_CANCELLED
+        invitedPersons:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvitedPerson'
+        restaurantName:
+          type: string
+        restaurantImage:
+          type: string
+
+    GroupDinnerProposalRequest:
+      type: object
+      properties:
+        restaurantId:
+          type: string
+        invitedPersons:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvitedPerson'
