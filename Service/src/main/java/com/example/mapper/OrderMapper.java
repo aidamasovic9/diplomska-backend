@@ -1,34 +1,40 @@
 package com.example.mapper;
 
-import com.example.entity.EatInTakeAway;
+import com.example.entity.FastOrder;
 import com.example.entity.Order;
 import com.example.model.input.OrderInputDto;
+import com.example.model.output.FastOrderObjectOutputDto;
 import com.example.model.output.OrderOutputDto;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
+import java.util.List;
 
-@Component
-public final class OrderMapper {
+@Mapper(componentModel = "spring")
+public interface OrderMapper {
 
-  public Order mapToEntity(OrderInputDto orderInputDto) {
-    Order order = new Order();
-    order.setEatInTakeAway(EatInTakeAway.valueOf(orderInputDto.getEatInTakeAway().name()));
-    order.setComment(orderInputDto.getComment());
+  List<FastOrderObjectOutputDto> toFastOrderOutputDtos(List<FastOrder> fastOrder);
 
-    return order;
-  }
+  @Mapping(target = "restaurantName", source = "restaurant.name")
+  @Mapping(target = "shiftName", source = "shift.name")
+  @Mapping(target = "mealImage", source = "meal.image")
+  @Mapping(target = "mealName", source = "meal.name")
+  @Mapping(target = "mealId", source = "meal.id")
+  @Mapping(target = "restaurantId", source = "restaurant.id")
+  @Mapping(target = "shiftId", source = "shift.id")
+  FastOrderObjectOutputDto toFastOrderOutputDto(FastOrder fastOrder);
 
-  public OrderOutputDto mapToDto(Order order) {
-    OrderOutputDto orderOutputDto = new OrderOutputDto();
+  @Mapping(target = "restaurantName", source = "restaurant.name")
+  @Mapping(target = "shiftName", source = "shift.name")
+  @Mapping(target = "mealImage", source = "meal.image")
+  @Mapping(target = "mealName", source = "meal.name")
+  OrderOutputDto toOrderOutputDto(Order order);
 
-    orderOutputDto.setOrderId(order.getId());
-    orderOutputDto.setRestaurantName(order.getRestaurant().getName());
-    orderOutputDto.setOrderDate(order.getOrderDate());
-    orderOutputDto.setComment(order.getComment());
-    orderOutputDto.setMealName(order.getMeal().getName());
-    orderOutputDto.setMealImage(order.getMeal().getImage());
-
-    return orderOutputDto;
-  }
-
+  @Mapping(target = "user", ignore = true)
+  @Mapping(target = "meal", ignore = true)
+  @Mapping(target = "shift", ignore = true)
+  @Mapping(target = "restaurant", ignore = true)
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "orderDate", expression = "java(java.time.LocalDate.now())")
+  Order mapToEntity(OrderInputDto orderInputDto);
 }

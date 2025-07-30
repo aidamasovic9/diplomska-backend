@@ -4,12 +4,22 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../context/store/store";
 import { removeItem } from "../../context/store/cartSlice";
 import Button from "@mui/material/Button";
-import {Alert, FormControl, InputLabel, MenuItem, Select, Snackbar, TextField} from "@mui/material";
+import {
+    Alert, AlertColor,
+    AlertPropsColorOverrides,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Select,
+    Snackbar,
+    TextField
+} from "@mui/material";
 import {Field, Form} from "react-final-form";
 import { Order } from '../../api/index.ts';
 import { OrderFormValues, prepareOrderRequest } from '../../../src/util.ts';
 import { useState } from "react";
 import { ShiftResponse } from '../../api/generated/model/shift-response.ts';
+import { OverridableStringUnion } from '@mui/types';
 
 interface OrderSummaryProps {
     restaurantId: string | undefined;
@@ -20,13 +30,45 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ restaurantId, shifts }) => 
     const cartItem = useSelector((state: RootState) => state.cart.item);
     const dispatch = useDispatch();
     const [showSnackbarMessage, setShowSnackbarMessage] = useState(false);
+    const [severity, setSeverity] = useState<OverridableStringUnion<AlertColor, AlertPropsColorOverrides> | undefined>(undefined);
+    const [message, setMessage] = useState('');
+    const [submitType, setSubmitType] = useState<"normal" | "fast">("normal");
+
+    const showAlert = (severity: AlertColor, message: string) => {
+        setSeverity(severity);
+        setMessage(message);
+        setShowSnackbarMessage(true);
+    }
 
     const onSubmit = async (values: OrderFormValues) => {
-        if (cartItem && restaurantId) {
-            await Order.createOrder("1", prepareOrderRequest(values, cartItem, restaurantId));
-            setShowSnackbarMessage(true);
+        if (submitType === "normal") {
+            await createOrder(values);
+        } else {
+            await createFastOrder(values);
         }
     };
+
+    const createOrder = async (values: OrderFormValues) => {
+        if (cartItem && restaurantId) {
+            const response = await Order.createOrder("1", prepareOrderRequest(values, cartItem, restaurantId));
+            if (response.status === 200) {
+                showAlert("success", "Successfully created an order");
+            } else {
+                showAlert("error", "Failed to create an order");
+            }
+        }
+    }
+
+    const createFastOrder = async (values: OrderFormValues) => {
+        if (cartItem && restaurantId) {
+            const response = await Order.createFastOrder("1", prepareOrderRequest(values, cartItem, restaurantId));
+            if (response.status === 200) {
+                showAlert("success", "Successfully saved a fast order");
+            } else {
+                showAlert("error", "Failed to create a fast order");
+            }
+        }
+    }
 
     return (
         <div className="cartDiv">
@@ -53,7 +95,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ restaurantId, shifts }) => 
                                     <FormControl fullWidth error={meta.touched && meta.error}>
                                         <InputLabel>Shift</InputLabel>
                                         <Select {...input} label="Shift">
-                                            {shifts && shifts.map((shift) => (
+                                            {shifts?.map((shift) => (
                                                 <MenuItem key={shift.id} value={shift.id}>
                                                     {shift.name}
                                                 </MenuItem>
@@ -86,10 +128,18 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ restaurantId, shifts }) => 
                                     />
                                 )}
                             </Field>
-                            <Button type="submit" variant="contained" color="primary">
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                color="primary"
+                                onClick={() => setSubmitType("normal")}>
                                 Submit Order
                             </Button>
-                            <Button type="submit" variant="contained" color="primary">
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                color="primary"
+                                onClick={() => setSubmitType("fast")}>
                                 Add fast Order
                             </Button>
                         </form>
@@ -98,14 +148,19 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ restaurantId, shifts }) => 
             ) : (
                 <p>No item in cart</p>
             )}
-            <Snackbar open={showSnackbarMessage} autoHideDuration={6000} onClose={() => setShowSnackbarMessage(false)}>
+            <Snackbar
+                open={showSnackbarMessage}
+                autoHideDuration={6000}
+                onClose={() => setShowSnackbarMessage(false)}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            >
                 <Alert
                     onClose={() => setShowSnackbarMessage(false)}
-                    severity="success"
+                    severity={severity}
                     variant="filled"
-                    sx={{ width: '100%' }}
+                    sx={{ width: '100%', zIndex: 1300, top: 120}}
                 >
-                    Successfully added order!
+                    {message}
                 </Alert>
             </Snackbar>
         </div>

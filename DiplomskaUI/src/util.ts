@@ -6,7 +6,7 @@ import FastFoodIcon from "@mui/icons-material/FastFood";
 import {COMMENT, EAT_IN_OR_TAKE_AWAY, SHIFT} from '../src/fieldNames.ts';
 import { MealResponse } from '../src/api/generated/model/meal-response.ts';
 import { OrderRequest } from '../src/api/generated/model/order-request.ts';
-import { OrderResponse } from '../src/api/generated/model/order-response.ts';
+import { FastOrderObject } from '../src/api/generated/model/fast-order-object.ts';
 
 
 export const categoryIconMap: Record<string, React.ElementType> = {
@@ -33,13 +33,12 @@ export const prepareOrderRequest = (
         shiftId: values.shift,
         mealId: orderItem.id,
         comment: values.comment,
-        fastOrder: false,
-        eatInOrTakeAway: values.eatInOrTakeAway,
+        eatInTakeAway: values.eatInOrTakeAway,
 
     } as OrderRequest);
 
-export const prepareFastOrderRequest = (
-    orderItem: OrderResponse,
+export const prepareOrderRequestFromFastOrder = (
+    orderItem: FastOrderObject,
 ): OrderRequest =>
     ({
         restaurantId: orderItem.restaurantId,
@@ -47,6 +46,6 @@ export const prepareFastOrderRequest = (
         mealId: orderItem.mealId,
         comment: orderItem.comment,
         fastOrder: true,
-        eatInOrTakeAway: orderItem.eatInOrTakeAway,
+        eatInTakeAway: orderItem.eatInTakeAway,
 
     } as OrderRequest);

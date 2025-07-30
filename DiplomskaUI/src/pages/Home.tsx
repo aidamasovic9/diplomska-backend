@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { fetchRestaurants } from '../context/store/restaurantSlice';
 import { RestaurantResponse } from '../api/generated/model/restaurant-response.ts';
 import { CircularProgress } from "@mui/material";
+import { fetchFastOrders } from "../../src/context/store/fastOrdersSlice.ts";
 
 const Home = () => {
 
@@ -13,6 +14,7 @@ const Home = () => {
 
     useEffect(() => {
         dispatch(fetchRestaurants('Skopje') as any);
+        dispatch(fetchFastOrders('1') as any);
     }, [dispatch]);
 
     if (loading) return <CircularProgress />;

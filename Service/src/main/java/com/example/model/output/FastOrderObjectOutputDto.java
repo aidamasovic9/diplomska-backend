@@ -1,16 +1,14 @@
-package com.example.model.input;
+package com.example.model.output;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter
 @Setter
+@Getter
 @ToString
-public class OrderInputDto {
+public class FastOrderObjectOutputDto extends CommonOrderObject {
   private String restaurantId;
   private String mealId;
   private String shiftId;
-  private String comment;
-  private EatInTakeAway eatInTakeAway;
 }

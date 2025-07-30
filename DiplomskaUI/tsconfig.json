@@ -6,6 +6,9 @@
   ],
   "compilerOptions": {
     "baseUrl": "./src",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler", // Required for Vite
+    "esModuleInterop": true
   }
 }

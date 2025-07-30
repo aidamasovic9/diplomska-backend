@@ -45,11 +45,10 @@ public class OrderService {
     order.setUser(user);
     order.setMeal(meal);
     order.setShift(shift);
-    order.setOrderDate(orderDate);
     order.setRestaurant(restaurant);
 
     orderRepository.save(order);
 
-    return orderMapper.mapToDto(order);
+    return orderMapper.toOrderOutputDto(order);
   }
 }

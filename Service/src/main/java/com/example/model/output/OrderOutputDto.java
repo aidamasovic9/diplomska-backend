@@ -7,12 +7,6 @@ import java.time.LocalDate;
 
 @Setter
 @Getter
-public class OrderOutputDto {
-  private Long orderId;
-  private String restaurantName;
-  private String comment;
+public class OrderOutputDto extends CommonOrderObject{
   private LocalDate orderDate;
-  private String shiftName;
-  private String mealImage;
-  private String mealName;
 }

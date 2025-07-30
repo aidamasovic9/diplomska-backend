@@ -1,0 +1,10 @@
+.fast-orders-slider {
+    width: 100%;
+    max-width: 1000px; /* Optional limit */
+    padding: 0 1rem;
+}
+
+.fast-orders-slider .slick-slide > div {
+    display: flex;
+    justify-content: center;
+}

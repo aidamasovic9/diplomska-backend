@@ -1,11 +1,15 @@
 .app-footer {
     background-color: #040066;
     display: flex;
+    flex-direction: column;
     align-items: center;
     position: absolute;
     bottom: 0;
     justify-content: center;
     color: white;
+    margin: 0;
+    overflow: hidden;
+    padding-bottom: 20px;
 }
 
 .logo-container {
@@ -16,4 +20,5 @@
 .footer-title {
     font-size: 24px;
     font-weight: bold;
+    margin-top: 0;
 }

@@ -131,6 +131,28 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FastOrdersResponse'
+    post:
+      summary: Saves a fast order for the given user
+      operationId: createFastOrder
+      tags:
+        - Order
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        description: Create order input model
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderRequest'
+      responses:
+        '200':
+          description: Successful response
+
   '/order/{userId}':
     post:
       summary: Creates order for a given user and meal
@@ -176,9 +198,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/OrderResponse'
+                $ref: '#/components/schemas/OrderResponse'
     delete:
       summary: Delete order for given user
       operationId: deleteOrder
@@ -386,16 +406,38 @@ components:
           type: string
         comment:
           type: string
-        fastOrder:
-          type: boolean
-        eatInOrTakeAway:
+        eatInTakeAway:
           type: string
           enum: [ EAT_IN, TAKE_AWAY ]
+
+    FastOrderObject:
+      type: object
+      properties:
+        id:
+          type: string
+        restaurantName:
+          type: string
+        restaurantId:
+          type: string
+        mealId:
+          type: string
+        mealName:
+          type: string
+        mealImage:
+          type: string
+        shiftName:
+          type: string
+        shiftId:
+          type: string
+        eatInTakeAway:
+          type: string
+        comment:
+          type: string
 
     OrderResponse:
       type: object
       properties:
-        orderId:
+        id:
           type: string
         restaurantName:
           type: string
@@ -415,7 +457,7 @@ components:
         orders:
           type: array
           items:
-            $ref: '#/components/schemas/OrderResponse'
+            $ref: '#/components/schemas/FastOrderObject'
 
     InvitedPerson:
       type: object
