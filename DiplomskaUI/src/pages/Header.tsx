@@ -1,4 +1,5 @@
 import '../styles/Header.css';
+import CartBadge from "../../src/pages/CartBadge.tsx";
 
 const Header = () => {
     return (
@@ -6,6 +7,7 @@ const Header = () => {
             <div className="logo-container">
                 <h1 className="app-title">Lunch App</h1>
             </div>
+            <CartBadge />
         </header>
     );
 };

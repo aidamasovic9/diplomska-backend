@@ -28,11 +28,12 @@ public class OrderController implements OrderApi {
   private final OrderDtoMapper orderDtoMapper;
 
   @Override
-  public ResponseEntity<Void> createFastOrder(String userId, OrderRequest orderRequest) {
+  public ResponseEntity<FastOrderObject> createFastOrder(String userId, OrderRequest orderRequest) {
     OrderInputDto orderInputDto = orderDtoMapper.mapToInputDto(orderRequest);
-    fastOrderService.createFastOrder(orderInputDto, userId);
+    FastOrderObjectOutputDto fastOrder = fastOrderService.createFastOrder(orderInputDto, userId);
+    FastOrderObject fastOrderObject = orderDtoMapper.mapToFastOrderObject(fastOrder);
 
-    return ResponseEntity.ok().build();
+    return ResponseEntity.ok(fastOrderObject);
   }
 
   @Override
@@ -46,15 +47,24 @@ public class OrderController implements OrderApi {
   }
 
   @Override
-  public ResponseEntity<Void> deleteOrder(String userId) {
-    return null;
+  public ResponseEntity<Void> deleteFastOrder(String userId, String itemId) {
+    orderService.deleteFastOrder(userId, itemId);
+
+    return ResponseEntity.ok().build();
+  }
+
+  @Override
+  public ResponseEntity<Void> deleteOrder(String orderId) {
+    orderService.deleteOrder(orderId);
+
+    return ResponseEntity.ok().build();
   }
 
   @Override
   public ResponseEntity<FastOrdersResponse> getFastOrders(String userId) {
     List<FastOrderObjectOutputDto> fastOrders = fastOrderService.getFastOrders(userId);
 
-    List<FastOrderObject> fastOrderObjects = orderDtoMapper.mapToFastOrderObject(fastOrders);
+    List<FastOrderObject> fastOrderObjects = orderDtoMapper.mapToFastOrderObjects(fastOrders);
     FastOrdersResponse fastOrdersResponse = new FastOrdersResponse();
     fastOrdersResponse.setOrders(fastOrderObjects);
 
@@ -63,6 +73,9 @@ public class OrderController implements OrderApi {
 
   @Override
   public ResponseEntity<OrderResponse> getOrder(String userId) {
-    return null;
+    OrderOutputDto order = orderService.getOrder(userId);
+    OrderResponse orderResponse = orderDtoMapper.mapToOutputDto(order);
+
+    return ResponseEntity.ok(orderResponse);
   }
 }

@@ -5,20 +5,23 @@ import Typography from "@mui/material/Typography";
 import { OrderResponse } from "../../../src/api/generated";
 
 type Props = {
+title: string;
+message: string;
 handleCloseDialog: () => void;
-handleOrder: (item: OrderResponse) => Promise<void>;
+handleOrder?: (item: OrderResponse) => Promise<void>;
+handleDeleteFastOrder?: (itemId?: string) => Promise<void>;
 item: OrderResponse;
 };
 
 export const AddItemDialog = (props: Props) => {
-    const {handleCloseDialog, handleOrder, item} = props;
+    const {title, message, handleCloseDialog, handleOrder, handleDeleteFastOrder, item} = props;
 
     return (
     <Dialog open onClose={handleCloseDialog}>
-        <DialogTitle>Confirm Order</DialogTitle>
+        <DialogTitle>{title}</DialogTitle>
         <DialogContent>
             <Typography>
-                Please confirm the following order:
+                {message}
             </Typography>
             <Typography><strong>Meal:</strong> {item.mealName}</Typography>
             <Typography><strong>Restaurant:</strong> {item.restaurantName}</Typography>
@@ -29,7 +32,16 @@ export const AddItemDialog = (props: Props) => {
         </DialogContent>
         <DialogActions>
             <Button onClick={handleCloseDialog} color="secondary">Cancel</Button>
-            <Button onClick={() => handleOrder(item)} color="primary" variant="contained">Order</Button>
+            {handleOrder &&
+                <Button onClick={() => handleOrder(item)} color="primary" variant="contained">Order</Button>
+            }
+            {handleDeleteFastOrder &&
+                <Button
+                    onClick={() => handleDeleteFastOrder(item.id)}
+                    color="primary"
+                    variant="contained">
+                    Delete fast order
+                </Button>}
         </DialogActions>
     </Dialog>
     );

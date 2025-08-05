@@ -6,6 +6,8 @@ import com.example.model.input.OrderInputDto;
 import com.example.model.output.OrderOutputDto;
 import com.example.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.openapitools.model.OrderRequest;
+import org.openapitools.model.OrderResponse;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,6 +23,27 @@ public class OrderService {
   private final MealRepository mealRepository;
   private final ShiftRepository shiftRepository;
   private final RestaurantRepository restaurantRepository;
+  private final FastOrderRepository fastOrderRepository;
+
+  public void deleteOrder(String itemId) {
+    orderRepository.deleteById(Long.valueOf(itemId));
+  }
+
+  public void deleteFastOrder(String userId, String orderId) {
+    fastOrderRepository.deleteFastOrderByIdAndUserId(Long.valueOf(orderId), Long.valueOf(userId));
+  }
+
+  public OrderOutputDto getOrder(String userId) {
+    Optional<Order> optionalOrder = orderRepository.findByUserIdAndOrderDate(Long.valueOf(userId), LocalDate.now());
+
+    if (optionalOrder.isPresent()) {
+      Order order = optionalOrder.get();
+
+      return orderMapper.toOrderOutputDto(order);
+    }
+
+    return null;
+  }
 
   public OrderOutputDto createOrder(OrderInputDto orderInputDto, String userId) {
     Long userIdLong = Long.parseLong(userId);

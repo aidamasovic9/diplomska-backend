@@ -1,11 +1,11 @@
 import RestaurantCard from "./restaurant/RestaurantCard.tsx";
-import {useDispatch, useSelector} from "react-redux";
-import { RootState } from "../context/store/store";
-import { useEffect } from "react";
-import { fetchRestaurants } from '../context/store/restaurantSlice';
 import { RestaurantResponse } from '../api/generated/model/restaurant-response.ts';
-import { CircularProgress } from "@mui/material";
-import { fetchFastOrders } from "../../src/context/store/fastOrdersSlice.ts";
+import {fetchRestaurants} from "../../src/context/store/restaurantSlice.ts";
+import {useEffect} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {RootState} from "../../src/context/store/store.ts";
+import UserDrawer from "../../src/pages/UserDrawer.tsx";
+
 
 const Home = () => {
 
@@ -13,25 +13,24 @@ const Home = () => {
     const { restaurants, loading, error } = useSelector((state: RootState) => state.restaurants);
 
     useEffect(() => {
-        dispatch(fetchRestaurants('Skopje') as any);
-        dispatch(fetchFastOrders('1') as any);
+        dispatch(fetchRestaurants("Skopje") as any);
     }, [dispatch]);
 
-    if (loading) return <CircularProgress />;
-    if (error) return <div>Error: {error}</div>;
+    if (loading) return <p>Loading…</p>;
+    if (error) return <p>Error: {error}</p>;
 
     return (
+        <div style={{ position: 'relative' }}>
         <div className="restaurant-list">
-            {restaurants.map((restaurant: RestaurantResponse) => (
+            {restaurants?.map((restaurant: RestaurantResponse) => (
                 <RestaurantCard
                     key={restaurant.id}
-                    name={restaurant.name}
-                    image={restaurant.image}
-                    shifts={restaurant.shifts}
-                    categories={restaurant.categories}
-                    id={restaurant.id}
+                    restaurant={restaurant}
+                    allRestaurants={restaurants}
                 />
             ))}
+        </div>
+            <UserDrawer />
         </div>
     );
 };

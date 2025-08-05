@@ -8,7 +8,15 @@
 }
 
 .menuButtons {
-    padding: 10px;
+    padding: 0;
+    align-self: center;
+    position: sticky;
+    top: 115px;
+    z-index: 1100;
+}
+.restaurantSwitcher {
+    padding-top: 10px;
+    padding-bottom: 5px;
     align-self: center;
     position: sticky;
     top: 64px;

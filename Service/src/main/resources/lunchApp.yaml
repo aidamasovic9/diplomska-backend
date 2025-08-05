@@ -152,6 +152,29 @@ paths:
       responses:
         '200':
           description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FastOrderObject'
+    delete:
+      summary: Delete fast order for given user
+      operationId: deleteFastOrder
+      tags:
+        - Order
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: itemId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
 
   '/order/{userId}':
     post:
@@ -199,13 +222,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OrderResponse'
+  '/order/{orderId}':
     delete:
       summary: Delete order for given user
       operationId: deleteOrder
       tags:
         - Order
       parameters:
-        - name: userId
+        - name: orderId
           in: path
           required: true
           schema:

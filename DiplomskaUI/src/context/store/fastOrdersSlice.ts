@@ -1,6 +1,7 @@
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import { FastOrdersResponse } from '../../api/generated/model/fast-orders-response.ts'
 import { Order } from '../../api/index.ts'
+import {FastOrderObject} from "../../../src/api/generated";
 
 interface FastOrderState {
     fastOrders: FastOrdersResponse;
@@ -22,7 +23,9 @@ export const fetchFastOrders = createAsyncThunk(
 );
 
 const initialState: FastOrderState = {
-    fastOrders: {},
+    fastOrders: {
+    orders: []
+    },
     loading: false,
     error: null,
 };
@@ -33,6 +36,17 @@ const fastOrdersSlice = createSlice({
     reducers: {
         clearFastOrders: (state) => {
             state.fastOrders = {};
+        },
+        addFastOrder: (state, action: PayloadAction<FastOrderObject>) => {
+            state.fastOrders.orders = [
+                ...(state.fastOrders.orders ?? []),
+                action.payload,
+            ];
+        },
+        removeFastOrder: (state, action: PayloadAction<string>) => {
+            if (state.fastOrders.orders) {
+                state.fastOrders.orders = state.fastOrders.orders.filter(order => order.id !== action.payload);
+            }
         },
     },
     extraReducers: (builder) => {
@@ -52,5 +66,5 @@ const fastOrdersSlice = createSlice({
     },
 });
 
-export const { clearFastOrders } = fastOrdersSlice.actions;
+export const { addFastOrder, clearFastOrders, removeFastOrder } = fastOrdersSlice.actions;
 export default fastOrdersSlice.reducer;

@@ -2,7 +2,7 @@
     background-color: #040066;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: self-start;
     position: absolute;
     bottom: 0;
     justify-content: center;
@@ -14,7 +14,7 @@
 
 .logo-container {
     display: flex;
-    align-items: center;
+    align-self: center;
 }
 
 .footer-title {

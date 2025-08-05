@@ -23,7 +23,7 @@ public class FastOrderService {
   private final FastOrderRepository fastOrderRepository;
   private final OrderMapper orderMapper;
 
-  public void createFastOrder(OrderInputDto orderInputDto, String userId) {
+  public FastOrderObjectOutputDto createFastOrder(OrderInputDto orderInputDto, String userId) {
     Long userIdLong = Long.parseLong(userId);
     Long shiftId = Long.parseLong(orderInputDto.getShiftId());
 
@@ -40,7 +40,9 @@ public class FastOrderService {
     fastOrder.setComment(orderInputDto.getComment());
     fastOrder.setEatInTakeAway(EatInTakeAway.valueOf(orderInputDto.getEatInTakeAway().name()));
 
-    fastOrderRepository.save(fastOrder);
+    FastOrder savedFastOrder = fastOrderRepository.save(fastOrder);
+
+    return orderMapper.toFastOrderOutputDto(savedFastOrder);
   }
 
   public List<FastOrderObjectOutputDto> getFastOrders(String userId) {

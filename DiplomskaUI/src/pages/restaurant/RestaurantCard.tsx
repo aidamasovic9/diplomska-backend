@@ -8,11 +8,24 @@ import * as React from "react";
 import MainOrderPage from "../menu/MainOrderPage.tsx";
 import Button from "@mui/material/Button";
 import { RestaurantResponse } from '../../api/generated/model/restaurant-response.ts';
+import {fetchRestaurants} from "../../../src/context/store/restaurantSlice.ts";
+import {useDispatch} from "react-redux";
 
-const RestaurantCard: React.FC<RestaurantResponse> = ({ name, image, shifts, categories, id }) => {
+interface RestaurantProps {
+    restaurant: RestaurantResponse;
+    allRestaurants: RestaurantResponse[]
+}
+
+const RestaurantCard: React.FC<RestaurantProps> = ({ restaurant, allRestaurants }: RestaurantProps) => {
     const [open, setOpen] = React.useState(false);
+    const dispatch = useDispatch();
 
-    const handleOpenRestaurant = () => setOpen((currentState) => !currentState);
+    const handleOpenRestaurant = () => {
+        setOpen((currentState) => !currentState);
+        if (open) {
+            dispatch(fetchRestaurants("Skopje") as any);
+        }
+    }
 
     const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -23,24 +36,23 @@ const RestaurantCard: React.FC<RestaurantResponse> = ({ name, image, shifts, cat
                 <CardMedia
                     component="img"
                     height="140"
-                    image={`${baseUrl}/images/${image}`}
+                    image={`${baseUrl}/images/${restaurant.image}`}
                     alt="restaurant image"
                 />
                 <CardContent className="content">
                     <Button className="select-button" onClick={handleOpenRestaurant}>Select</Button>
                     <div className="text-container">
-                    <h2>{name}</h2>
+                    <h2>{restaurant.name}</h2>
                     </div>
-                    <ShiftDetailsComponent shifts={shifts} />
+                    <ShiftDetailsComponent shifts={restaurant.shifts} />
                 </CardContent>
             </CardActionArea>
         </Card>
                 <MainOrderPage
                 open={open}
                 handleClose={handleOpenRestaurant}
-                categories={categories}
-                restaurantId={id}
-                shifts={shifts} />
+                restaurant={restaurant}
+                allRestaurants={allRestaurants}/>
         </>
     );
 };

@@ -2,8 +2,8 @@
     background-color: #040066;
     padding: 10px;
     display: flex;
-    align-items: start;
-    justify-content: flex-start;
+    align-items: center;
+    justify-content: space-between;
     color: white;
     box-sizing: border-box;
 }

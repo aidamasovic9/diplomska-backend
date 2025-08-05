@@ -20,6 +20,7 @@ import { OrderFormValues, prepareOrderRequest } from '../../../src/util.ts';
 import { useState } from "react";
 import { ShiftResponse } from '../../api/generated/model/shift-response.ts';
 import { OverridableStringUnion } from '@mui/types';
+import { addOrder } from "../../../src/context/store/orderSlice.ts";
 
 interface OrderSummaryProps {
     restaurantId: string | undefined;
@@ -40,11 +41,17 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ restaurantId, shifts }) => 
         setShowSnackbarMessage(true);
     }
 
-    const onSubmit = async (values: OrderFormValues) => {
+    const onSubmit = async (values: OrderFormValues, form: any) => {
+        let success: boolean;
         if (submitType === "normal") {
-            await createOrder(values);
+            success = await createOrder(values);
         } else {
-            await createFastOrder(values);
+            success = await createFastOrder(values);
+        }
+
+        if (success) {
+            dispatch(removeItem());
+            form.reset();
         }
     };
 
@@ -53,10 +60,13 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ restaurantId, shifts }) => 
             const response = await Order.createOrder("1", prepareOrderRequest(values, cartItem, restaurantId));
             if (response.status === 200) {
                 showAlert("success", "Successfully created an order");
+                dispatch(addOrder(response.data));
+                return true;
             } else {
                 showAlert("error", "Failed to create an order");
             }
         }
+        return false;
     }
 
     const createFastOrder = async (values: OrderFormValues) => {
@@ -64,10 +74,12 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ restaurantId, shifts }) => 
             const response = await Order.createFastOrder("1", prepareOrderRequest(values, cartItem, restaurantId));
             if (response.status === 200) {
                 showAlert("success", "Successfully saved a fast order");
+                return true;
             } else {
                 showAlert("error", "Failed to create a fast order");
             }
         }
+        return false;
     }
 
     return (
@@ -76,7 +88,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ restaurantId, shifts }) => 
             {cartItem ? (
                 <Form
                     onSubmit={onSubmit}
-                    render={({ handleSubmit }) => (
+                    render={({ handleSubmit, form }) => (
                         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                                 <h4>{cartItem.name}</h4>

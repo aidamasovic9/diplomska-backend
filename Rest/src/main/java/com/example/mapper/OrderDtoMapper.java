@@ -4,7 +4,6 @@ import com.example.model.input.OrderInputDto;
 import com.example.model.output.FastOrderObjectOutputDto;
 import com.example.model.output.OrderOutputDto;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.openapitools.model.FastOrderObject;
 import org.openapitools.model.OrderRequest;
 import org.openapitools.model.OrderResponse;
@@ -18,6 +17,7 @@ public interface OrderDtoMapper {
 
   OrderResponse mapToOutputDto(OrderOutputDto dto);
 
-  @Mapping(target = "id", source = "orderId")
-  List<FastOrderObject> mapToFastOrderObject(List<FastOrderObjectOutputDto> outputDtos);
+  List<FastOrderObject> mapToFastOrderObjects(List<FastOrderObjectOutputDto> outputDtos);
+
+  FastOrderObject mapToFastOrderObject(FastOrderObjectOutputDto dto);
 }
