@@ -38,6 +38,126 @@ paths:
       responses:
         '201':
           description: User created
+  '/users/search/favorites':
+    get:
+      summary: Search users
+      description: Search users by name, last name, or short name.
+      operationId: searchFavoriteUsers
+      tags:
+        - User
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The search term to filter users.
+        - name: loggedInUserId
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The id of the currently logged in user.
+      responses:
+        '200':
+          description: List of matching users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserResponse'
+  '/users/search':
+    get:
+      summary: Search users
+      description: Search users by name, last name, or short name.
+      operationId: searchUsers
+      tags:
+        - User
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The search term to filter users.
+      responses:
+        '200':
+          description: List of matching users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserResponse'
+
+  '/users/{userId}/favorites':
+    get:
+      summary: Get favorite users for a given user
+      operationId: getFavoriteUsers
+      tags:
+        - User
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of favorite users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserResponse'
+
+    post:
+      summary: Add a user to favorites
+      operationId: addFavoriteUser
+      tags:
+        - User
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        description: User to add to favorites
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                favoriteUserId:
+                  type: string
+      responses:
+        '200':
+          description: Favorite user added successfully
+
+    delete:
+      summary: Remove a user from favorites
+      operationId: removeFavoriteUser
+      tags:
+        - User
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: favoriteUserId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Favorite user removed successfully
+
   '/restaurants/{city}':
     get:
       summary: Get all restaurants
@@ -89,27 +209,6 @@ paths:
       responses:
         '200':
           description: Successful response
-        '404':
-          description: Restaurant or category not found
-  '/meals/{categoryId}':
-    get:
-      summary: Get meals in a category for a restaurant
-      operationId: getMealsByCategory
-      tags:
-        - Meal
-      parameters:
-        - name: categoryId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MenuByCategory'
         '404':
           description: Restaurant or category not found
   '/order/{userId}/fast-orders':
@@ -255,6 +354,51 @@ paths:
           content:
             application/json:
               schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GroupDinnerProposalResponse'
+    patch:
+      summary: Answer to the group dinner proposal by accepting or declining
+      operationId: answerDinnerProposal
+      tags:
+        - DinnerProposal
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: proposalId
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: accept
+          in: query
+          required: true
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Successfully answered to the group dinner proposal
+  '/dinner-proposal/myProposal/{userId}':
+    get:
+      summary: Dinner proposal for the user
+      operationId: getMyDinnerProposal
+      tags:
+        - DinnerProposal
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Group dinner proposal for this user
+          content:
+            application/json:
+              schema:
                 $ref: '#/components/schemas/GroupDinnerProposalResponse'
     post:
       summary: Propose a group dinner
@@ -281,6 +425,47 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GroupDinnerProposalResponse'
+    delete:
+      summary: Deletes the created dinner proposal
+      operationId: deleteGroupDinnerProposal
+      tags:
+        - DinnerProposal
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: proposalId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully deleted group dinner proposals
+
+  '/categories/{categoryId}/meals':
+    get:
+      summary: Get meals in a category for a restaurant
+      operationId: getMealsByCategory
+      tags:
+        - Category
+      parameters:
+        - name: categoryId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuByCategory'
+        '404':
+          description: Restaurant or category not found
 components:
   schemas:
     UserRequest:
@@ -303,9 +488,6 @@ components:
 
     UserResponse:
       type: object
-      required:
-        - email
-        - password
       properties:
         id:
           type: integer
@@ -471,6 +653,8 @@ components:
           type: string
         shiftName:
           type: string
+        shiftId:
+          type: string
         comment:
           type: string
         orderDate:
@@ -486,7 +670,9 @@ components:
     InvitedPerson:
       type: object
       properties:
-        name:
+        firstName:
+          type: string
+        lastName:
           type: string
         shortName:
           type: string
@@ -503,6 +689,10 @@ components:
     GroupDinnerProposalResponse:
       type: object
       properties:
+        id:
+          type: string
+        initiator:
+          $ref: '#/components/schemas/InvitedPerson'
         status:
           type: string
           enum:
@@ -517,15 +707,20 @@ components:
             $ref: '#/components/schemas/InvitedPerson'
         restaurantName:
           type: string
-        restaurantImage:
+        shiftName:
           type: string
+
 
     GroupDinnerProposalRequest:
       type: object
       properties:
         restaurantId:
           type: string
-        invitedPersons:
+        dinnerDate:
+          type: string
+        shiftId:
+          type: string
+        invitedPersonIds:
           type: array
           items:
-            $ref: '#/components/schemas/InvitedPerson'
+            type: string

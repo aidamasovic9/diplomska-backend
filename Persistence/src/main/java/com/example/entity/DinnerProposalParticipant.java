@@ -37,4 +37,8 @@ public class DinnerProposalParticipant {
   @Enumerated(EnumType.STRING)
   @Column(name = "STATUS")
   private ParticipantStatus status;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "PROPOSAL_ID")
+  private DinnerProposal dinnerProposal;
 }

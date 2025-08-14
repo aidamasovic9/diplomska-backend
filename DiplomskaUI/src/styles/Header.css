@@ -17,3 +17,8 @@
     font-size: 24px;
     font-weight: bold;
 }
+
+.header-right {
+    display: flex;
+    align-items: center;
+}

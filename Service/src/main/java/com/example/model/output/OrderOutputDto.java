@@ -9,4 +9,5 @@ import java.time.LocalDate;
 @Getter
 public class OrderOutputDto extends CommonOrderObject{
   private LocalDate orderDate;
+  private String shiftId;
 }

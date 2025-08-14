@@ -1,0 +1,43 @@
+.location-dialog-paper {
+    background-color: #7ab5e6 !important;
+}
+
+.location-dialog-title {
+    position: relative;
+    padding-bottom: 8px;
+    color: white;
+    font-weight: bold;
+}
+
+.location-close-button {
+    position: absolute !important;
+    right: 8px;
+    top: 8px;
+    color: white !important;
+}
+
+.location-button {
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    text-align: center;
+}
+
+.location-button img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    transition: border-color 0.2s ease;
+}
+
+.location-button:hover img {
+    border-color: #1976d2;
+}
+
+.location-name {
+    margin-top: 4px;
+    color: white;
+    font-weight: bold;
+}

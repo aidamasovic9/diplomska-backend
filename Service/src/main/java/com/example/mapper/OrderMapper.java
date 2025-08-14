@@ -26,6 +26,7 @@ public interface OrderMapper {
 
   @Mapping(target = "restaurantName", source = "restaurant.name")
   @Mapping(target = "shiftName", source = "shift.name")
+  @Mapping(target = "shiftId", source = "shift.id")
   @Mapping(target = "mealImage", source = "meal.image")
   @Mapping(target = "mealName", source = "meal.name")
   OrderOutputDto toOrderOutputDto(Order order);

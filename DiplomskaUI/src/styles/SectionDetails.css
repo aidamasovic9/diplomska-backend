@@ -2,5 +2,33 @@
     width: 24px;
     height: 20px;
     border-radius: 50%;
-    border: 2px solid red;
 }
+
+.person-image.favorite-user {
+    border-radius: 50%;
+    box-shadow: 0 0 8px 3px rgba(255, 0, 0, 0.8); /* red glow */
+    transition: box-shadow 0.3s ease;
+}
+
+.users-shortnames-container {
+    display: flex;
+    gap: 8px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    padding: 8px 0;
+}
+
+/* Show on hover of AccordionDetails */
+.MuiAccordionDetails-root:hover .users-shortnames-container {
+    opacity: 1;
+}
+
+/* Style for each short name */
+.user-shortname {
+    background-color: #eee;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-weight: 600;
+    cursor: default;
+}
+

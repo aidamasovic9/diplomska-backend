@@ -1,8 +1,8 @@
 import * as React from "react";
 
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../context/store/store";
-import { removeItem } from "../../context/store/cartSlice";
+import { RootState } from "../../../src/context/store/store.ts";
+import { removeItem } from "../../../src/context/store/cartSlice.ts";
 import Button from "@mui/material/Button";
 import {
     Alert, AlertColor,
@@ -15,19 +15,22 @@ import {
     TextField
 } from "@mui/material";
 import {Field, Form} from "react-final-form";
-import { Order } from '../../api/index.ts';
+import { Order } from '../../../src/api';
 import { OrderFormValues, prepareOrderRequest } from '../../../src/util.ts';
 import { useState } from "react";
-import { ShiftResponse } from '../../api/generated/model/shift-response.ts';
+import { ShiftResponse } from '../../../src/api/generated/model/shift-response.ts';
 import { OverridableStringUnion } from '@mui/types';
 import { addOrder } from "../../../src/context/store/orderSlice.ts";
+import UserSelect from "../../../src/pages/user/UserSelect.tsx";
 
 interface OrderSummaryProps {
     restaurantId: string | undefined;
     shifts: ShiftResponse[] | undefined;
+    fastOrder?: boolean
+    groupDinner?: boolean
 }
 
-const OrderSummary: React.FC<OrderSummaryProps> = ({ restaurantId, shifts }) => {
+const OrderSummary: React.FC<OrderSummaryProps> = ({ restaurantId, shifts, fastOrder, groupDinner }) => {
     const cartItem = useSelector((state: RootState) => state.cart.item);
     const dispatch = useDispatch();
     const [showSnackbarMessage, setShowSnackbarMessage] = useState(false);
@@ -57,7 +60,8 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ restaurantId, shifts }) => 
 
     const createOrder = async (values: OrderFormValues) => {
         if (cartItem && restaurantId) {
-            const response = await Order.createOrder("1", prepareOrderRequest(values, cartItem, restaurantId));
+            const response =
+                await Order.createOrder(String(values.user.id), prepareOrderRequest(values, cartItem, restaurantId));
             if (response.status === 200) {
                 showAlert("success", "Successfully created an order");
                 dispatch(addOrder(response.data));
@@ -82,13 +86,15 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ restaurantId, shifts }) => 
         return false;
     }
 
+    console.log("shifts", shifts);
+
     return (
-        <div className="cartDiv">
+        <div className={`cartDiv ${groupDinner ? 'no-fixed' : ''}`}>
             <h2>Order Summary</h2>
             {cartItem ? (
                 <Form
                     onSubmit={onSubmit}
-                    render={({ handleSubmit, form }) => (
+                    render={({ handleSubmit }) => (
                         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                                 <h4>{cartItem.name}</h4>
@@ -140,20 +146,32 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ restaurantId, shifts }) => 
                                     />
                                 )}
                             </Field>
-                            <Button
+                            {!fastOrder && <Field name="user">
+                                {({ input }) => (
+                                    <UserSelect
+                                        value={input.value}
+                                        onChange={input.onChange}
+                                        label="Order for User"
+                                    />
+                                )}
+                            </Field>
+                            }
+                            {!fastOrder && <Button
                                 type="submit"
                                 variant="contained"
                                 color="primary"
                                 onClick={() => setSubmitType("normal")}>
                                 Submit Order
                             </Button>
-                            <Button
+                            }
+                            {fastOrder && <Button
                                 type="submit"
                                 variant="contained"
                                 color="primary"
                                 onClick={() => setSubmitType("fast")}>
                                 Add fast Order
                             </Button>
+                            }
                         </form>
                     )}
                 />

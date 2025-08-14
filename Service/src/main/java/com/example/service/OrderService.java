@@ -6,8 +6,6 @@ import com.example.model.input.OrderInputDto;
 import com.example.model.output.OrderOutputDto;
 import com.example.repository.*;
 import lombok.RequiredArgsConstructor;
-import org.openapitools.model.OrderRequest;
-import org.openapitools.model.OrderResponse;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

@@ -8,6 +8,4 @@ import java.util.List;
 import java.util.Optional;
 
 public interface DinnerProposalParticipantRepository extends JpaRepository<DinnerProposalParticipant, Long> {
-  Optional<DinnerProposalParticipant> findById(@NonNull Long id);
-  List<DinnerProposalParticipant> findByUserId(Long userId);
 }

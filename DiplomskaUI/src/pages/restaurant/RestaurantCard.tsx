@@ -10,6 +10,7 @@ import Button from "@mui/material/Button";
 import { RestaurantResponse } from '../../api/generated/model/restaurant-response.ts';
 import {fetchRestaurants} from "../../../src/context/store/restaurantSlice.ts";
 import {useDispatch} from "react-redux";
+import { removeItem } from "../../../src/context/store/cartSlice.ts";
 
 interface RestaurantProps {
     restaurant: RestaurantResponse;
@@ -19,11 +20,13 @@ interface RestaurantProps {
 const RestaurantCard: React.FC<RestaurantProps> = ({ restaurant, allRestaurants }: RestaurantProps) => {
     const [open, setOpen] = React.useState(false);
     const dispatch = useDispatch();
+    const storedLocation = localStorage.getItem("selectedLocation") || "Skopje";
 
     const handleOpenRestaurant = () => {
         setOpen((currentState) => !currentState);
         if (open) {
-            dispatch(fetchRestaurants("Skopje") as any);
+            dispatch(removeItem());
+            dispatch(fetchRestaurants(storedLocation) as any);
         }
     }
 

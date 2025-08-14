@@ -22,6 +22,7 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import {fetchFastOrders} from "../../src/context/store/fastOrdersSlice.ts";
 import {addOrder} from "../../src/context/store/orderSlice.ts";
+import { removeItem } from "../../src/context/store/cartSlice.ts";
 
 const FastOrdersSection = () => {
     const dispatch = useDispatch();
@@ -40,6 +41,7 @@ const FastOrdersSection = () => {
 
     const handleOpenOrderPage = () => {
         setOpenOrderPage(false);
+        dispatch(removeItem());
         dispatch(fetchFastOrders("1") as any);
     }
 
@@ -240,6 +242,7 @@ const FastOrdersSection = () => {
             handleClose={handleOpenOrderPage}
             restaurant={defaultRestaurant}
             allRestaurants={restaurants}
+            fastOrder
         />
         }
         </>

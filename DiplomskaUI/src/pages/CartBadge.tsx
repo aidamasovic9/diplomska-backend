@@ -15,6 +15,7 @@ const CartBadge = () => {
     const order = useSelector((state: RootState) => state.order.order);
     const [showSnackbar, setShowSnackbar] = useState(false);
     const dispatch = useDispatch();
+    const storedLocation = localStorage.getItem("selectedLocation") || "Skopje";
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -30,7 +31,7 @@ const CartBadge = () => {
             setShowSnackbar(true);
             handleClose();
             dispatch(clearOrder());
-            dispatch(fetchRestaurants("Skopje") as any);
+            dispatch(fetchRestaurants(storedLocation) as any);
         }
     };
 
@@ -70,7 +71,7 @@ const CartBadge = () => {
                             </Box>
                         </>
                     ) : (
-                        <Typography variant="body2">You have no order.</Typography>
+                        <Typography variant="body2">You have no order for today.</Typography>
                     )}
                 </Box>
             </Popover>

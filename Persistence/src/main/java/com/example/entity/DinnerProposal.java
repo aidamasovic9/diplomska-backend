@@ -48,7 +48,7 @@ public class DinnerProposal {
   @Column(name = "CREATED_AT")
   private LocalDate createdAt;
 
-  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
   @JoinColumn(name = "PROPOSAL_ID")
   private List<DinnerProposalParticipant> participants;
 }

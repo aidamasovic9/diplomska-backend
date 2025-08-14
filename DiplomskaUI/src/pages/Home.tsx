@@ -1,26 +1,111 @@
 import RestaurantCard from "./restaurant/RestaurantCard.tsx";
 import { RestaurantResponse } from '../api/generated/model/restaurant-response.ts';
 import {fetchRestaurants} from "../../src/context/store/restaurantSlice.ts";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../src/context/store/store.ts";
-import UserDrawer from "../../src/pages/UserDrawer.tsx";
+import UserDrawer from "../../src/pages/user/UserDrawer.tsx";
+import GroupDinnerProposalOverlay from "../../src/pages/groupDinner/GroupDinnerProposalOverlay.tsx";
+import ProposalNotification from "../pages/groupDinner/ProposalNotification.tsx";
+import {fetchDinnerProposals} from "../context/store/dinnerProposalSlice.ts";
+import {GroupDinnerProposalResponse} from "../api/generated";
+import ProposalOverlay from "../pages/groupDinner/ProposalOverlay.tsx";
+import {DinnerProposal} from "../api";
+import {fetchMyDinnerProposal} from "../context/store/myDinnerProposalSlice.ts";
+import {HttpStatusCode} from "axios";
+import {Alert, AlertColor, AlertPropsColorOverrides, Snackbar} from "@mui/material";
+import {OverridableStringUnion} from "@mui/types";
 
 
 const Home = () => {
 
     const dispatch = useDispatch();
     const { restaurants, loading, error } = useSelector((state: RootState) => state.restaurants);
+    const { dinnerProposals } = useSelector((state: RootState) => state.dinnerProposals);
+    const { myDinnerProposal } = useSelector((state: RootState) => state.myDinnerProposal);
+    const storedLocation = localStorage.getItem("selectedLocation") || "Skopje";
+    const [isOverlayOpen, setIsOverlayOpen] = useState(false);
+    const [openProposalOverlay, setOpenProposalOverlay] = useState(false);
+    const [selectedProposal, setSelectedProposal] = useState<GroupDinnerProposalResponse | null>(null);
+    const [message, setMessage] = useState('');
+    const [severity, setSeverity] = useState<OverridableStringUnion<AlertColor, AlertPropsColorOverrides> | undefined>(undefined);
+    const [showSnackbarMessage, setShowSnackbarMessage] = useState(false);
 
     useEffect(() => {
-        dispatch(fetchRestaurants("Skopje") as any);
+        dispatch(fetchRestaurants(storedLocation) as any);
+        dispatch(fetchDinnerProposals("1") as any);
+        dispatch(fetchMyDinnerProposal("1") as any)
     }, [dispatch]);
 
     if (loading) return <p>Loading…</p>;
     if (error) return <p>Error: {error}</p>;
 
+    const handleDecline= (id: string) => {
+        console.log(id);
+    }
+
+    const handleDelete= (id: string) => {
+        console.log(id);
+    }
+
+    const handleAccept = async (id: string) => {
+        if (selectedProposal?.id) {
+            const response = await DinnerProposal.answerDinnerProposal(id, selectedProposal.id, true);
+            if (response.status === HttpStatusCode.Ok) {
+                dispatch(fetchDinnerProposals("1") as any);
+                setMessage("Proposal accepted! Please proceed with creating your order.");
+                setSeverity('success');
+                setShowSnackbarMessage(true);
+                setOpenProposalOverlay(false);
+            } else {
+                setMessage("Failed to send accept invite. Please try again.");
+                setSeverity('error');
+                setShowSnackbarMessage(true);
+            }
+        }
+    }
     return (
-        <div style={{ position: 'relative' }}>
+        <>
+        <div style={{ position: 'relative', maxHeight: '80vh',   // optional max height (80% viewport height)
+            overflowY: 'auto', display: "flex", flexDirection: "row" }}>
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    padding: '10px',
+                    width: '250px',  // fixed width for your buttons column
+                    boxSizing: 'border-box',
+                    height: '500px'
+                }}
+            >
+                <ProposalNotification
+                    incomingProposals={dinnerProposals || []}
+                    myProposal={myDinnerProposal}
+                    onOpenProposal={(proposal: GroupDinnerProposalResponse) => {
+                        setSelectedProposal(proposal);
+                        setOpenProposalOverlay(true);
+                    }}
+                />
+                <button
+                    onClick={() => setIsOverlayOpen(true)}
+                    style={{
+                        position: 'fixed',      // fixed position relative to viewport
+                        bottom: '250px',         // distance from bottom
+                        left: '20px',           // distance from left
+                        zIndex: 1000,           // make sure it stays above other content
+                        padding: '12px 20px',
+                        backgroundColor: '#1976d2', // MUI primary blue
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '8px',
+                        cursor: 'pointer',
+                        boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                    }}
+                >
+                    Propose a group dinner
+                </button>
+            </div>
         <div className="restaurant-list">
             {restaurants?.map((restaurant: RestaurantResponse) => (
                 <RestaurantCard
@@ -32,6 +117,39 @@ const Home = () => {
         </div>
             <UserDrawer />
         </div>
+    {isOverlayOpen && (
+        <GroupDinnerProposalOverlay
+            open={isOverlayOpen}
+            onClose={() => setIsOverlayOpen(false)}
+            restaurants={restaurants}
+        />
+    )}
+        {openProposalOverlay && (
+           <ProposalOverlay
+        open={openProposalOverlay}
+              proposal={selectedProposal}
+              onClose={() => setOpenProposalOverlay(false)}
+              currentUserId="1"
+       onDecline={(id) => handleDecline(id)}
+              onDelete={(id) => handleDelete(id)}
+        onAccept={handleAccept}
+           />)}
+            {showSnackbarMessage && (<Snackbar
+                open={showSnackbarMessage}
+                autoHideDuration={6000}
+                onClose={() => setShowSnackbarMessage(false)}
+                anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+            >
+                <Alert
+                    onClose={() => setShowSnackbarMessage(false)}
+                    severity={severity}
+                    variant="filled"
+                    sx={{width: '100%'}}
+                >
+                    {message}
+                </Alert>
+            </Snackbar>)}
+       </>
     );
 };
 

@@ -3,6 +3,8 @@ import { Accordion, AccordionSummary, AccordionDetails, Typography } from '@mui/
 import '../../styles/SectionDetails.css';
 import { useState } from "react";
 import { ShiftResponse } from '../../api/generated/model/shift-response';
+import {useSelector} from "react-redux";
+import {RootState} from "../../../src/context/store/store.ts";
 
 interface AccordionDetailsProps {
     shifts: ShiftResponse[] | undefined;
@@ -10,6 +12,9 @@ interface AccordionDetailsProps {
 
 const ShiftDetailsComponent: React.FC<AccordionDetailsProps> = ({ shifts }) => {
     const [expandedShift, setExpandedShift] = useState<number | null>(null);
+    const favoriteUsers = useSelector((state: RootState) => state.favoriteUsers.favoriteUsers);
+    const favoriteUserIds = favoriteUsers.map(u => u.id);
+
 
     const handleAccordionToggle = (index: number) => {
         setExpandedShift((prev) => (prev === index ? null : index));
@@ -32,7 +37,11 @@ const ShiftDetailsComponent: React.FC<AccordionDetailsProps> = ({ shifts }) => {
                             <img
                                 src={`${baseUrl}/images/${user.image}`}
                                 alt={user.shortName}
-                                className="person-image"
+                                className={`person-image ${
+                                    user.id !== undefined && favoriteUserIds.includes(user.id)
+                                        ? 'favorite-user'
+                                        : ''
+                                }`}
                                 key={index}
                             />
                         ))}
@@ -42,10 +51,21 @@ const ShiftDetailsComponent: React.FC<AccordionDetailsProps> = ({ shifts }) => {
                             <img
                                 src={`${baseUrl}/images/${user.image}`}
                                 alt={user.shortName}
-                                className="person-image"
+                                className={`person-image ${
+                                    user.id !== undefined && favoriteUserIds.includes(user.id)
+                                        ? 'favorite-user'
+                                        : ''
+                                }`}
                                 key={index}
                             />
                         ))}</Typography>
+                        <div className="users-shortnames-container">
+                            {shift?.users?.map((user, index) => (
+                                <span key={index} className="user-shortname" title={`${user.firstName} ${user.lastName}`}>
+                                      {user.shortName}
+                                </span>
+                            ))}
+                        </div>
                     </AccordionDetails>
                 </Accordion>
             ))}

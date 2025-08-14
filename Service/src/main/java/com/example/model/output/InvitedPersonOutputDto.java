@@ -1,6 +1,5 @@
 package com.example.model.output;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -8,12 +7,11 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@AllArgsConstructor
-public class UserOutputDto {
-  private Long id;
+public class InvitedPersonOutputDto {
+  private String id;
   private String firstName;
   private String lastName;
-  private String email;
-  private String shortName;
   private String image;
+  private String shortName;
+  private InvitedPersonStatus status;
 }

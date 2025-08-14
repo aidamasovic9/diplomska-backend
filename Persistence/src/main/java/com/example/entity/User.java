@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -58,6 +59,14 @@ public class User implements UserDetails {
 
   @Column(name = "PASSWORD")
   private String password;
+
+  @ManyToMany
+  @JoinTable(
+      name = "USER_FAVORITES",
+      joinColumns = @JoinColumn(name = "USER_ID"),
+      inverseJoinColumns = @JoinColumn(name = "FAVORITE_USER_ID")
+  )
+  private List<User> favoriteUsers = new ArrayList<>();
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {

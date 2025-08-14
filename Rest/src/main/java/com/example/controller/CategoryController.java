@@ -4,7 +4,7 @@ import com.example.mapper.MealOutputDtoMapper;
 import com.example.model.output.MealOutputDto;
 import com.example.service.MealService;
 import lombok.RequiredArgsConstructor;
-import org.openapitools.api.MealsApi;
+import org.openapitools.api.CategoriesApi;
 import org.openapitools.model.MealResponse;
 import org.openapitools.model.MenuByCategory;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-public class MealController implements MealsApi {
+public class CategoryController implements CategoriesApi {
 
   private final MealService mealService;
   private final MealOutputDtoMapper mealMapper;

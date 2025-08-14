@@ -2,18 +2,41 @@
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
-    justify-content: center;
-    padding: 20px;
+    justify-content: left;
+    padding-top: 20px;
+    padding-left: 0;
+    box-sizing: border-box;
+    max-width: 1400px;
+    margin: 0;
+    align-content: flex-start; /* keep wrapped rows pinned at top */
 }
 
-.restaurant-card {
-    width: 250px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
+/* force up to 4 cards per row */
+/*.restaurant-list > * {*/
+/*    flex: 0 0 calc(25% - 20px);*/
+/*    max-width: calc(25% - 20px);*/
+/*    box-sizing: border-box;*/
+/*}*/
+
+.restaurant-card,
+.card {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
+
+/*@media (max-width: 1024px) {*/
+/*    .restaurant-list > * {*/
+/*        flex: 0 0 calc(50% - 20px);*/
+/*        max-width: calc(50% - 20px);*/
+/*    }*/
+/*}*/
+/*@media (max-width: 600px) {*/
+/*    .restaurant-list > * {*/
+/*        flex: 0 0 100%;*/
+/*        max-width: 100%;*/
+/*    }*/
+/*}*/
 
 h2 {
     margin: 10px 0;
