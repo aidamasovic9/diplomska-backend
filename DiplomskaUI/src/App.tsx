@@ -9,34 +9,33 @@ import {fetchOrder} from "../src/context/store/orderSlice.ts";
 import {fetchFavoriteUsers} from "../src/context/store/favoriteUsersSlice.ts";
 import LoginPage from "../src/pages/LoginPage.tsx";
 import {useAuth} from "../src/context/AuthProvider.tsx";
-import useFetchCurrentUser from "../src/pages/useFetchCurrentUser.ts";
 
 function App() {
     const dispatch = useDispatch();
     const { token, userId } = useAuth();
-    useFetchCurrentUser();
 
-    if (!token) {
-        return <LoginPage />;
-    }
-
+    // Always call hooks here
     useEffect(() => {
         if (userId) {
             dispatch(fetchFastOrders(userId) as any);
             dispatch(fetchOrder(userId) as any);
             dispatch(fetchFavoriteUsers(userId) as any);
         }
-    }, [dispatch]);
+    }, [dispatch, userId]);
 
-  return (
-      <div>
-          <Header />
-          <main className="main-content">
-              <Home />
-          </main>
-          <Footer />
-      </div>
-  );
+    if (!token) {
+        return <LoginPage />;
+    }
+
+    return (
+        <div>
+            <Header />
+            <main className="main-content">
+                <Home />
+            </main>
+            <Footer />
+        </div>
+    );
 }
 
 export default App

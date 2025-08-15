@@ -1,15 +1,14 @@
 import axios from 'axios';
+import { getToken } from '../pages/auth';
 
 const axiosInstance = axios.create();
 
-type VoidFunction = () => void;
-let onRequestCallback: VoidFunction | null = null;
-
-axiosInstance.interceptors.response.use((res) => {
-    if (onRequestCallback) {
-        onRequestCallback();
+axiosInstance.interceptors.request.use(config => {
+    const token = getToken();
+    if (token) {
+        config.headers['Authorization'] = `Bearer ${token}`;
     }
-    return res;
+    return config;
 });
 
 export default axiosInstance;
