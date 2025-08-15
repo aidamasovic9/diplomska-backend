@@ -18,6 +18,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import {prepareProposeGroupDinnerRequest} from "../../util.ts";
 import {OverridableStringUnion} from "@mui/types";
 import {fetchMyDinnerProposal} from "../../context/store/myDinnerProposalSlice.ts";
+import {useAuth} from "../../context/AuthProvider.tsx";
 
 type Props = {
     onClose: () => void;
@@ -40,6 +41,7 @@ const GroupDinnerProposalOverlay: React.FC<Props> = ({ onClose, restaurants, ope
     const [showSnackbarMessage, setShowSnackbarMessage] = useState(false);
     const [severity, setSeverity] = useState<OverridableStringUnion<AlertColor, AlertPropsColorOverrides> | undefined>(undefined);
     const [message, setMessage] = useState('');
+    const { userId } = useAuth();
 
     const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -48,7 +50,7 @@ const GroupDinnerProposalOverlay: React.FC<Props> = ({ onClose, restaurants, ope
 
     const sendInvite = async () => {
         const invitedPersonIds = invitedPersons.map(p => p.id?.toString());
-        if (orderDetails && selectedRestaurant?.id) {
+        if (orderDetails && selectedRestaurant?.id && userId) {
             try {
                 const request = prepareProposeGroupDinnerRequest(
                     orderDetails,
@@ -56,10 +58,10 @@ const GroupDinnerProposalOverlay: React.FC<Props> = ({ onClose, restaurants, ope
                     invitedPersonIds ?? []
                 );
 
-                const response = await DinnerProposal.proposeGroupDinner("1", request);
+                const response = await DinnerProposal.proposeGroupDinner(userId, request);
 
                 if (response.status === HttpStatusCode.Ok) {
-                    dispatch(fetchMyDinnerProposal("1") as any);
+                    dispatch(fetchMyDinnerProposal(userId) as any);
                     setMessage("Invite sent successfully!");
                     setSeverity('success');
                     setShowSnackbarMessage(true);

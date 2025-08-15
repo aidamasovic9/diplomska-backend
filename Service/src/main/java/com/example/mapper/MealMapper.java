@@ -10,4 +10,6 @@ import java.util.List;
 public interface MealMapper {
 
   List<MealOutputDto> toMealOutputDtoList(List<Meal> meal);
+
+  MealOutputDto toMealOutputDto(Meal meal);
 }

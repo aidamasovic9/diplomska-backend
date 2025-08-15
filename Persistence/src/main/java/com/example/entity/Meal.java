@@ -43,4 +43,10 @@ public class Meal {
 
   @Column(name = "DESCRIPTION")
   private String description;
+
+  @Column(name = "RATING_COUNT")
+  private BigDecimal ratingCount;
+
+  @Column(name = "RATING_SUM")
+  private BigDecimal ratingSum;
 }

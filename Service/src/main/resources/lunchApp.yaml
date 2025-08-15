@@ -38,6 +38,23 @@ paths:
       responses:
         '201':
           description: User created
+  '/users/me':
+    get:
+      summary: Get current logged-in user
+      tags:
+        - User
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: Current user info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '401':
+          description: Unauthorized
+
   '/users/search/favorites':
     get:
       summary: Search users
@@ -444,6 +461,50 @@ paths:
       responses:
         '200':
           description: Successfully deleted group dinner proposals
+  '/meals/{mealId}/rating':
+    post:
+      summary: Submit a rating for a meal
+      operationId: submitMealRating
+      tags:
+        - Meal
+      parameters:
+        - name: mealId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the meal to rate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                rating:
+                  type: integer
+                  minimum: 0
+                  maximum: 5
+                  description: Rating value between 0 and 5
+      responses:
+        '200':
+          description: Rating submitted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mealId:
+                    type: string
+                  rating:
+                    type: integer
+                  averageRating:
+                    type: number
+                    format: float
+        '400':
+          description: Invalid rating value
 
   '/categories/{categoryId}/meals':
     get:
@@ -466,8 +527,99 @@ paths:
                 $ref: '#/components/schemas/MenuByCategory'
         '404':
           description: Restaurant or category not found
+  '/auth/register':
+    post:
+      summary: Register a new user
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Invalid input or email/password format
+        '409':
+          description: User already exists
+  '/auth/login':
+    post:
+      summary: Authenticate user and return JWT
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Invalid credentials
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
+    RegisterRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: user@myCompany.com
+        password:
+          type: string
+          format: password
+          example: MyPassword!1
+        firstName:
+          type: string
+        lastName:
+          type: string
+        shortName:
+          type: string
+
+    LoginRequest:
+      type: object
+      required:
+          - email
+          - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: user@myCompany.com
+        password:
+          type: string
+          format: password
+          example: MyPassword!1
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: JWT authentication token
+        expiresIn:
+          type: integer
+          description: Token expiration time in seconds
     UserRequest:
       type: object
       properties:
@@ -596,7 +748,7 @@ components:
         image:
           type: string
         avgRating:
-          type: string
+          type: number
           format: decimal
         description:
           type: string

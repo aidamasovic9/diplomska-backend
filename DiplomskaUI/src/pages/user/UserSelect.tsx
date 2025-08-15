@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Autocomplete, Avatar, TextField } from "@mui/material";
 import { User } from "../../api/index.ts";
 import { UserResponse } from "../../../src/api/generated";
+import {useAuth} from "../../context/AuthProvider.tsx";
 
 interface UserSelectProps {
     value: UserResponse | null;
@@ -15,11 +16,12 @@ const UserSelect: React.FC<UserSelectProps> = ({ value, onChange, excludeSelf, l
     const [searchQuery, setSearchQuery] = useState("");
     const [searchResults, setSearchResults] = useState<UserResponse[]>([]);
     const baseUrl = import.meta.env.VITE_API_BASE_URL;
+    const { userId } = useAuth();
 
     useEffect(() => {
-        if (searchQuery.trim().length > 0) {
+        if (searchQuery.trim().length > 0 && userId) {
             if (excludeSelf) {
-                User.searchFavoriteUsers(searchQuery, "1")
+                User.searchFavoriteUsers(searchQuery, userId)
                     .then((res) => setSearchResults(res.data))
                     .catch(() => setSearchResults([]));
             } else {

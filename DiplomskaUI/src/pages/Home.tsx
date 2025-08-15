@@ -15,6 +15,7 @@ import {fetchMyDinnerProposal} from "../context/store/myDinnerProposalSlice.ts";
 import {HttpStatusCode} from "axios";
 import {Alert, AlertColor, AlertPropsColorOverrides, Snackbar} from "@mui/material";
 import {OverridableStringUnion} from "@mui/types";
+import {useAuth} from "../context/AuthProvider.tsx";
 
 
 const Home = () => {
@@ -30,11 +31,14 @@ const Home = () => {
     const [message, setMessage] = useState('');
     const [severity, setSeverity] = useState<OverridableStringUnion<AlertColor, AlertPropsColorOverrides> | undefined>(undefined);
     const [showSnackbarMessage, setShowSnackbarMessage] = useState(false);
+    const { userId } = useAuth();
 
     useEffect(() => {
-        dispatch(fetchRestaurants(storedLocation) as any);
-        dispatch(fetchDinnerProposals("1") as any);
-        dispatch(fetchMyDinnerProposal("1") as any)
+        if (userId) {
+            dispatch(fetchDinnerProposals(userId) as any);
+            dispatch(fetchRestaurants(storedLocation) as any);
+            dispatch(fetchMyDinnerProposal(userId) as any);
+        }
     }, [dispatch]);
 
     if (loading) return <p>Loading…</p>;
@@ -49,10 +53,10 @@ const Home = () => {
     }
 
     const handleAccept = async (id: string) => {
-        if (selectedProposal?.id) {
+        if (selectedProposal?.id && userId) {
             const response = await DinnerProposal.answerDinnerProposal(id, selectedProposal.id, true);
             if (response.status === HttpStatusCode.Ok) {
-                dispatch(fetchDinnerProposals("1") as any);
+                dispatch(fetchDinnerProposals(userId) as any);
                 setMessage("Proposal accepted! Please proceed with creating your order.");
                 setSeverity('success');
                 setShowSnackbarMessage(true);
@@ -129,7 +133,7 @@ const Home = () => {
         open={openProposalOverlay}
               proposal={selectedProposal}
               onClose={() => setOpenProposalOverlay(false)}
-              currentUserId="1"
+              currentUserId={userId || ''}
        onDecline={(id) => handleDecline(id)}
               onDelete={(id) => handleDelete(id)}
         onAccept={handleAccept}

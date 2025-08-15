@@ -38,8 +38,9 @@ public class UserService implements UserDetailsService {
     userRepository.save(newUser);
   }
 
-  public UserOutputDto getUserById(Long id) {
-    return userServiceMapper.toUserOutputDto(userRepository.findById(id).orElse(null));
+  public UserOutputDto getUserByEmail(String email) {
+    User userDetails = (User) this.loadUserByUsername(email);
+    return userServiceMapper.toUserOutputDto(userDetails);
   }
 
   @Override

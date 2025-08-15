@@ -110,7 +110,7 @@ const ProposalOverlay: React.FC<ProposalOverlayProps> = ({
                         <Button
                             variant="contained"
                             color="success"
-                            onClick={() => onAccept("1")}
+                            onClick={() => onAccept(currentUserId)}
                         >
                             Accept
                         </Button>

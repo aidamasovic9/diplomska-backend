@@ -11,7 +11,7 @@ type MenuListPageProps = {
 const MenuListPage: React.FC<MenuListPageProps> = ({meals}: MenuListPageProps) => {
     return (
         <div className='menuDiv'>
-            {meals?.map(item => <MenuItem item={item} key={item.id}/>)}
+            {meals?.map(item => <MenuItem initialItem={item} key={item.id}/>)}
         </div>
     );
 };

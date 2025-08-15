@@ -7,14 +7,25 @@ import {useEffect} from "react";
 import {fetchFastOrders} from "../src/context/store/fastOrdersSlice.ts";
 import {fetchOrder} from "../src/context/store/orderSlice.ts";
 import {fetchFavoriteUsers} from "../src/context/store/favoriteUsersSlice.ts";
+import LoginPage from "../src/pages/LoginPage.tsx";
+import {useAuth} from "../src/context/AuthProvider.tsx";
+import useFetchCurrentUser from "../src/pages/useFetchCurrentUser.ts";
 
 function App() {
     const dispatch = useDispatch();
+    const { token, userId } = useAuth();
+    useFetchCurrentUser();
+
+    if (!token) {
+        return <LoginPage />;
+    }
 
     useEffect(() => {
-        dispatch(fetchFastOrders('1') as any);
-        dispatch(fetchOrder("1") as any);
-        dispatch(fetchFavoriteUsers("1") as any);
+        if (userId) {
+            dispatch(fetchFastOrders(userId) as any);
+            dispatch(fetchOrder(userId) as any);
+            dispatch(fetchFavoriteUsers(userId) as any);
+        }
     }, [dispatch]);
 
   return (

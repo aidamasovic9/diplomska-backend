@@ -12,10 +12,12 @@ import {useEffect, useState} from 'react';
 import { User } from '../../../src/api';
 import {AddFavoriteUserRequest, UserResponse} from "../../../src/api/generated";
 import UserSelect from "../../../src/pages/user/UserSelect.tsx";
+import {useAuth} from "../../context/AuthProvider.tsx";
 
 const UserDrawer = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [favoriteUsers, setFavoriteUsers] = useState<UserResponse[]>([]);
+    const { userId } = useAuth();
 
     const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -24,17 +26,17 @@ const UserDrawer = () => {
     };
 
     useEffect(() => {
-        if (drawerOpen) {
-            User.getFavoriteUsers("1")
+        if (drawerOpen && userId) {
+            User.getFavoriteUsers(userId)
                 .then(res => setFavoriteUsers(res.data))
                 .catch(err => console.error(err));
         }
     }, [drawerOpen]);
 
     const handleAddFavorite = (user: UserResponse | null) => {
-        if (user && !favoriteUsers.find(u => u.id === user.id)) {
+        if (userId && user && !favoriteUsers.find(u => u.id === user.id)) {
             const body: AddFavoriteUserRequest = { favoriteUserId: String(user.id) };
-            User.addFavoriteUser("1", body)
+            User.addFavoriteUser(userId, body)
                 .then(() => {
                     setFavoriteUsers(prev => [...prev, user]);
                 })
@@ -43,11 +45,13 @@ const UserDrawer = () => {
     };
 
     const handleRemoveFavorite = (favoriteUserId: string | number) => {
-        User.removeFavoriteUser("1", String(favoriteUserId))
-            .then(() => {
-                setFavoriteUsers(prev => prev.filter(u => u.id !== favoriteUserId));
-            })
-            .catch(err => console.error(err));
+        if (userId) {
+            User.removeFavoriteUser(userId, String(favoriteUserId))
+                .then(() => {
+                    setFavoriteUsers(prev => prev.filter(u => u.id !== favoriteUserId));
+                })
+                .catch(err => console.error(err));
+        }
     };
 
     return (

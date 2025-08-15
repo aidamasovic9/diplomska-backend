@@ -22,6 +22,7 @@ import { ShiftResponse } from '../../../src/api/generated/model/shift-response.t
 import { OverridableStringUnion } from '@mui/types';
 import { addOrder } from "../../../src/context/store/orderSlice.ts";
 import UserSelect from "../../../src/pages/user/UserSelect.tsx";
+import {useAuth} from "../../context/AuthProvider.tsx";
 
 interface OrderSummaryProps {
     restaurantId: string | undefined;
@@ -37,6 +38,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ restaurantId, shifts, fastO
     const [severity, setSeverity] = useState<OverridableStringUnion<AlertColor, AlertPropsColorOverrides> | undefined>(undefined);
     const [message, setMessage] = useState('');
     const [submitType, setSubmitType] = useState<"normal" | "fast">("normal");
+    const { userId } = useAuth();
 
     const showAlert = (severity: AlertColor, message: string) => {
         setSeverity(severity);
@@ -74,8 +76,8 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ restaurantId, shifts, fastO
     }
 
     const createFastOrder = async (values: OrderFormValues) => {
-        if (cartItem && restaurantId) {
-            const response = await Order.createFastOrder("1", prepareOrderRequest(values, cartItem, restaurantId));
+        if (cartItem && restaurantId && userId) {
+            const response = await Order.createFastOrder(userId, prepareOrderRequest(values, cartItem, restaurantId));
             if (response.status === 200) {
                 showAlert("success", "Successfully saved a fast order");
                 return true;
@@ -85,8 +87,6 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ restaurantId, shifts, fastO
         }
         return false;
     }
-
-    console.log("shifts", shifts);
 
     return (
         <div className={`cartDiv ${groupDinner ? 'no-fixed' : ''}`}>

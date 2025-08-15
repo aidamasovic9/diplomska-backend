@@ -23,6 +23,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import {fetchFastOrders} from "../../src/context/store/fastOrdersSlice.ts";
 import {addOrder} from "../../src/context/store/orderSlice.ts";
 import { removeItem } from "../../src/context/store/cartSlice.ts";
+import { useAuth } from "../context/AuthProvider.tsx";
 
 const FastOrdersSection = () => {
     const dispatch = useDispatch();
@@ -36,13 +37,16 @@ const FastOrdersSection = () => {
     const [openOrderPage, setOpenOrderPage] = useState(false);
     const [openDeleteItemDialog, setOpenDeleteItemDialog] = useState(false);
     const [itemForDeletion, setItemForDeletion] = useState({});
+    const { userId } = useAuth();
 
     const orderCount = fastOrders.orders?.length ?? 0;
 
     const handleOpenOrderPage = () => {
-        setOpenOrderPage(false);
-        dispatch(removeItem());
-        dispatch(fetchFastOrders("1") as any);
+        if (userId) {
+            setOpenOrderPage(false);
+            dispatch(removeItem());
+            dispatch(fetchFastOrders(userId) as any);
+        }
     }
 
     const showAlert = (severity: AlertColor, message: string) => {
@@ -67,17 +71,19 @@ const FastOrdersSection = () => {
     const defaultRestaurant = restaurants[0];
 
     const handleOrder = async (item: OrderResponse) => {
-      await Order.createOrder("1", prepareOrderRequestFromFastOrder(item))
-        .then((response) => {
-           showAlert("success", "Successfully created an order");
-           dispatch(addOrder(response.data));
-        })
-        .catch(() => {
-           showAlert("error", "Failed to create an order");
-         })
-        .finally(() => {
-          setOpenDialog(false);
-        });
+        if (userId) {
+            await Order.createOrder(userId, prepareOrderRequestFromFastOrder(item))
+                .then((response) => {
+                    showAlert("success", "Successfully created an order");
+                    dispatch(addOrder(response.data));
+                })
+                .catch(() => {
+                    showAlert("error", "Failed to create an order");
+                })
+                .finally(() => {
+                    setOpenDialog(false);
+                });
+        }
     };
 
     const onItemClick = (item: OrderResponse) => {
@@ -94,11 +100,10 @@ const FastOrdersSection = () => {
     }
 
     const handleItemDelete = async (itemId?: string) => {
-        if (itemId) {
-            await Order.deleteFastOrder("1", itemId)
+        if (itemId && userId) {
+            await Order.deleteFastOrder(userId, itemId)
            .then(() => {
              showAlert("success", "Successfully deleted a fast order");
-             dispatch(fetchFastOrders("1") as any);
            })
            .catch(() => {
              showAlert("error", "Failed to delete the fast order");

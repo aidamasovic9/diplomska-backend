@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.entity.User;
 import com.example.mapper.UserInputDtoMapper;
 import com.example.mapper.UserOutputDtoMapper;
 import com.example.model.input.UserInputDto;
@@ -11,6 +12,8 @@ import org.openapitools.model.AddFavoriteUserRequest;
 import org.openapitools.model.UserRequest;
 import org.openapitools.model.UserResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -86,5 +89,19 @@ public class UserController implements UsersApi {
         .map(userOutputDtoMapper::toResponse)
         .toList();
     return ResponseEntity.ok(responses);
+  }
+
+  @Override
+  public ResponseEntity<UserResponse> usersMeGet() {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    if (auth == null || auth.getPrincipal() == null || auth.getPrincipal().equals("anonymousUser")) {
+      return ResponseEntity.status(401).build();
+    }
+
+    String email = auth.getName(); // principal is usually the username/email
+    UserOutputDto userByEmail = userService.getUserByEmail(email);
+
+    UserResponse dto = userOutputDtoMapper.toResponse(userByEmail);
+    return ResponseEntity.ok(dto);
   }
 }
