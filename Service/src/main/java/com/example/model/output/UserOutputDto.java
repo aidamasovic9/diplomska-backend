@@ -1,5 +1,6 @@
 package com.example.model.output;
 
+import com.example.model.input.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,4 +17,5 @@ public class UserOutputDto {
   private String email;
   private String shortName;
   private String image;
+  private UserRole role;
 }

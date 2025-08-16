@@ -51,7 +51,9 @@
     margin-bottom: 15px;
     border-radius: 8px;
     border: 1px solid #ccc;
+    background-color: #e3e8f1;
     font-size: 14px;
+    color: #000;
 }
 
 .login-form button {

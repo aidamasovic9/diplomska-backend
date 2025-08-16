@@ -5,7 +5,6 @@ import { OrderApi } from '../api/generated/api/order-api'
 import axiosInstance from '../api/axiosInstance.ts';
 import {DinnerProposalApi} from "../api/generated/api/dinner-proposal-api.ts";
 import {MealApi} from "../api/generated/api/meal-api.ts";
-import {DefaultApi} from "../api/generated/api/default-api.ts";
 import {AuthenticationApi} from "../api/generated/api/authentication-api.ts";
 import {Configuration} from "../api/generated";
 
@@ -20,5 +19,4 @@ export const Category = new CategoryApi(apiConfig, API_BASE_URL, axiosInstance);
 export const Order = new OrderApi(apiConfig, API_BASE_URL, axiosInstance);
 export const DinnerProposal = new DinnerProposalApi(apiConfig, API_BASE_URL, axiosInstance);
 export const Meal = new MealApi(apiConfig, API_BASE_URL, axiosInstance);
-export const Default = new DefaultApi(apiConfig, API_BASE_URL, axiosInstance);
 export const Auth = new AuthenticationApi(apiConfig, API_BASE_URL, axiosInstance);

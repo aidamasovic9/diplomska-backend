@@ -13,10 +13,17 @@ import ProposalOverlay from "../pages/groupDinner/ProposalOverlay.tsx";
 import {DinnerProposal} from "../api";
 import {fetchMyDinnerProposal} from "../context/store/myDinnerProposalSlice.ts";
 import {HttpStatusCode} from "axios";
-import {Alert, AlertColor, AlertPropsColorOverrides, Snackbar} from "@mui/material";
+import {Alert, AlertColor, AlertPropsColorOverrides, Box, IconButton, Snackbar, Tooltip} from "@mui/material";
 import {OverridableStringUnion} from "@mui/types";
 import {useAuth} from "../context/AuthProvider.tsx";
+import LocationSwitcher from "./LocationSwitcher.tsx";
+import LocationCityIcon from "@mui/icons-material/LocationCity";
 
+const locationIcons: Record<string, string> = {
+    Skopje: "/images/Skopje.png",
+    Ohrid: "/images/Ohrid.png",
+    Bitola: "/images/Bitola.png",
+};
 
 const Home = () => {
 
@@ -31,7 +38,22 @@ const Home = () => {
     const [message, setMessage] = useState('');
     const [severity, setSeverity] = useState<OverridableStringUnion<AlertColor, AlertPropsColorOverrides> | undefined>(undefined);
     const [showSnackbarMessage, setShowSnackbarMessage] = useState(false);
+    const [locationDialogOpen, setLocationDialogOpen] = useState(false);
+    const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
     const { userId } = useAuth();
+
+    useEffect(() => {
+        const savedLocation = localStorage.getItem("selectedLocation");
+        if (savedLocation) setSelectedLocation(savedLocation);
+    }, []);
+
+    useEffect(() => {
+        if (selectedLocation) {
+            localStorage.setItem("selectedLocation", selectedLocation);
+            dispatch(fetchRestaurants(selectedLocation) as any);
+        }
+    }, [selectedLocation]);
 
     useEffect(() => {
         if (userId) {
@@ -95,7 +117,7 @@ const Home = () => {
                     onClick={() => setIsOverlayOpen(true)}
                     style={{
                         position: 'fixed',      // fixed position relative to viewport
-                        bottom: '250px',         // distance from bottom
+                        bottom: '150px',         // distance from bottom
                         left: '20px',           // distance from left
                         zIndex: 1000,           // make sure it stays above other content
                         padding: '12px 20px',
@@ -119,7 +141,38 @@ const Home = () => {
                 />
             ))}
         </div>
+            <div style={{ display: "flex", alignItems: "end", flexDirection: "row"}}>
+            <Tooltip title={`${selectedLocation}`} arrow>
+                <IconButton
+                    color="inherit"
+                    onClick={() => setLocationDialogOpen(true)}
+                    aria-label="switch location"
+                    style={{
+                        position: 'absolute',   // Changed from 'absolute'
+                        top: 0,
+                        right: 45,           // 👈 Anchors to the right
+                    }}
+                >
+                    {selectedLocation ? (
+                        <Box
+                            component="img"
+                            src={`${baseUrl}${locationIcons[selectedLocation]}`}
+                            sx={{
+                                width: 32,
+                                height: 32,
+                                bgcolor: 'white',       // white background
+                                borderRadius: '50%',    // circular shape
+                                objectFit: 'contain',   // ensures full image fits
+                                padding: 0.5,           // optional: small padding inside circle
+                            }}
+                        />
+                    ) : (
+                        <LocationCityIcon />
+                    )}
+                </IconButton>
+            </Tooltip>
             <UserDrawer />
+        </div>
         </div>
     {isOverlayOpen && (
         <GroupDinnerProposalOverlay
@@ -153,6 +206,11 @@ const Home = () => {
                     {message}
                 </Alert>
             </Snackbar>)}
+            <LocationSwitcher
+                open={locationDialogOpen}
+                onClose={() => setLocationDialogOpen(false)}
+                onSelect={(loc) => setSelectedLocation(loc)}
+            />
        </>
     );
 };

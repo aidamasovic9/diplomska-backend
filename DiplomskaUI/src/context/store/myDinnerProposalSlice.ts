@@ -3,7 +3,7 @@ import {DinnerProposal} from '../../api/index.ts'
 import {GroupDinnerProposalResponse} from "../../../src/api/generated";
 
 interface MyDinnerProposalState {
-    myDinnerProposal: GroupDinnerProposalResponse;
+    myDinnerProposal: GroupDinnerProposalResponse | null;
     loading: boolean;
     error: string | null;
 }
@@ -23,7 +23,7 @@ export const fetchMyDinnerProposal = createAsyncThunk(
 
 
 const initialState: MyDinnerProposalState = {
-    myDinnerProposal: {},
+    myDinnerProposal: null,
     loading: false,
     error: null,
 };

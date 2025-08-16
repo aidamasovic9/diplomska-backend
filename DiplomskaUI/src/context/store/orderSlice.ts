@@ -22,7 +22,7 @@ export const fetchOrder = createAsyncThunk(
 );
 
 const initialState: OrderState = {
-    order: {},
+    order: null,
     loading: false,
     error: null,
 };

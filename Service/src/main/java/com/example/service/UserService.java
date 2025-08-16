@@ -3,6 +3,7 @@ package com.example.service;
 import com.example.entity.User;
 import com.example.mapper.UserMapper;
 import com.example.model.input.UserInputDto;
+import com.example.model.input.UserRole;
 import com.example.model.output.UserOutputDto;
 import com.example.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -69,7 +70,8 @@ public class UserService implements UserDetailsService {
             user.getLastName(),
             user.getEmail(),
             user.getShortName(),
-            user.getImage()
+            user.getImage(),
+            UserRole.valueOf(user.getRole().name())
         ))
         .toList();
   }
@@ -84,7 +86,8 @@ public class UserService implements UserDetailsService {
             user.getLastName(),
             user.getEmail(),
             user.getShortName(),
-            user.getImage()
+            user.getImage(),
+            UserRole.valueOf(user.getRole().name())
         ))
         .toList();
   }

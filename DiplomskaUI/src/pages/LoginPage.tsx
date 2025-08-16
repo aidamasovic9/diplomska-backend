@@ -28,7 +28,7 @@ export default function LoginPage() {
 
         if (response.status == 200) {
             const token  = response.data.token;
-            login(token || ''); // store in sessionStorage & context
+            login(token || '');// store in sessionStorage & context
         } else {
             const error = response.statusText;
             alert("Error: " + error);

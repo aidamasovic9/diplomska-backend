@@ -653,6 +653,9 @@ components:
           type: string
         image:
           type: string
+        role:
+          type: string
+          enum: [ ADMIN, USER ]
 
     RestaurantResponse:
       type: object
