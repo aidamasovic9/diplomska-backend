@@ -1,0 +1,19 @@
+.admin-container {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column; /* stack existing + add form */
+    gap: 2rem; /* space between them */
+}
+
+.admin-paper {
+    padding: 2rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.admin-tab-content {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}

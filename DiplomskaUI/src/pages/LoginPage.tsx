@@ -4,6 +4,7 @@ import '../styles/LoginPage.css';
 import {Auth} from "../api";
 import {AuthResponse} from "../api/generated";
 import {AxiosResponse} from "axios";
+import {useNavigate} from "react-router-dom";
 
 export default function LoginPage() {
     const { login } = useAuth();
@@ -12,6 +13,8 @@ export default function LoginPage() {
     const [password, setPassword] = useState("");
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
+    const [shortName, setShortName] = useState("");
+    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -21,6 +24,7 @@ export default function LoginPage() {
         if (isRegister) {
             body.firstName = firstName;
             body.lastName = lastName;
+            body.shortName = shortName;
             response = await Auth.authRegisterPost(body);
         } else {
             response = await Auth.authLoginPost(body);
@@ -29,6 +33,7 @@ export default function LoginPage() {
         if (response.status == 200) {
             const token  = response.data.token;
             login(token || '');// store in sessionStorage & context
+            navigate('/', { replace: true });
         } else {
             const error = response.statusText;
             alert("Error: " + error);
@@ -51,6 +56,11 @@ export default function LoginPage() {
                                 value={lastName}
                                 onChange={(e) => setLastName(e.target.value)}
                                 placeholder="Last Name"
+                            />
+                            <input
+                                value={shortName}
+                                onChange={(e) => setShortName(e.target.value)}
+                                placeholder="Shortname"
                             />
                         </>
                     )}

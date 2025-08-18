@@ -51,9 +51,7 @@ const UserBadge = () => {
                     aria-haspopup="true"
                     aria-expanded={open ? "true" : undefined}
                 >
-                    <Avatar sx={{ width: 30, height: 30 }}>
-                        {`${baseUrl}/images/${user.image}`}
-                    </Avatar>
+                    <Avatar src={`${baseUrl}/images/${user.image}`} sx={{ width: 30, height: 30 }} />
                 </IconButton>
             </Tooltip>
 

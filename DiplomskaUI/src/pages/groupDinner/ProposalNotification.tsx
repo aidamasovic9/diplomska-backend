@@ -13,7 +13,7 @@ import { useTheme, Theme } from "@mui/material/styles";
 
 interface ProposalNotificationsProps {
     incomingProposals?: GroupDinnerProposalResponse[];
-    myProposal?: GroupDinnerProposalResponse;
+    myProposal: GroupDinnerProposalResponse | null;
     onOpenProposal: (proposal: GroupDinnerProposalResponse) => void;
 }
 

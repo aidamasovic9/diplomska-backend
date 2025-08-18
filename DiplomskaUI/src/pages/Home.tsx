@@ -1,5 +1,3 @@
-import RestaurantCard from "./restaurant/RestaurantCard.tsx";
-import { RestaurantResponse } from '../api/generated/model/restaurant-response.ts';
 import {fetchRestaurants} from "../../src/context/store/restaurantSlice.ts";
 import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
@@ -18,6 +16,7 @@ import {OverridableStringUnion} from "@mui/types";
 import {useAuth} from "../context/AuthProvider.tsx";
 import LocationSwitcher from "./LocationSwitcher.tsx";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
+import RestaurantList from "./restaurant/RestaurantList.tsx";
 
 const locationIcons: Record<string, string> = {
     Skopje: "/images/Skopje.png",
@@ -132,15 +131,7 @@ const Home = () => {
                     Propose a group dinner
                 </button>
             </div>
-        <div className="restaurant-list">
-            {restaurants?.map((restaurant: RestaurantResponse) => (
-                <RestaurantCard
-                    key={restaurant.id}
-                    restaurant={restaurant}
-                    allRestaurants={restaurants}
-                />
-            ))}
-        </div>
+            <RestaurantList restaurants={restaurants} />
             <div style={{ display: "flex", alignItems: "end", flexDirection: "row"}}>
             <Tooltip title={`${selectedLocation}`} arrow>
                 <IconButton
