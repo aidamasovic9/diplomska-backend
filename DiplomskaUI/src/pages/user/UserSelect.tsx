@@ -46,7 +46,7 @@ const UserSelect: React.FC<UserSelectProps> = ({ value, onChange, excludeSelf, l
             renderOption={(props, option) => (
                 <li {...props}>
                     <Avatar
-                        src={`${baseUrl}/images/AMD.JPG`}
+                        src={`${baseUrl}/images/${option.image}`}
                         alt={`${option.firstName} ${option.lastName}`}
                         sx={{ width: 24, height: 24, mr: 1 }}
                     />

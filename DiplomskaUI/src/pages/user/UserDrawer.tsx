@@ -103,7 +103,7 @@ const UserDrawer = () => {
                                 }
                             >
                                 <Avatar
-                                    src={`${baseUrl}/images/AMD.JPG`}
+                                    src={`${baseUrl}/images/${user.image}`}
                                     alt={`${user.firstName} ${user.lastName}`}
                                     sx={{ width: 30, height: 30, mr: 1 }}
                                 />

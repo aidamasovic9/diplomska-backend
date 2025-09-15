@@ -1,5 +1,6 @@
 .location-dialog-paper {
     background-color: #7ab5e6 !important;
+    color: #3683bd !important;
 }
 
 .location-dialog-title {
@@ -7,6 +8,7 @@
     padding-bottom: 8px;
     color: white;
     font-weight: bold;
+    color: #040066;
 }
 
 .location-close-button {
@@ -14,6 +16,7 @@
     right: 8px;
     top: 8px;
     color: white !important;
+    color: #040066;
 }
 
 .location-button {
@@ -38,6 +41,6 @@
 
 .location-name {
     margin-top: 4px;
-    color: white;
     font-weight: bold;
+    color: #040066;
 }

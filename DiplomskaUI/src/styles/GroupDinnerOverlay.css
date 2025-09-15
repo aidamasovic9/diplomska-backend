@@ -93,11 +93,13 @@
     display: flex;
     flex-wrap: wrap;
     gap: 24px; /* more space between cards */
-    justify-content: center; /* align cards to start */
+    justify-content: flex-start; /* align to left (change to center if needed) */
+    align-items: flex-start; /* align cards to start */
 }
 
 .restaurant-card {
-    width: 220px; /* wider cards */
+    flex: 0 0 205px;      /* fixed width, do not grow/shrink */
+    max-width: 100%;
     border: 2px solid transparent;
     border-radius: 8px;
     cursor: pointer;

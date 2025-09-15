@@ -94,6 +94,18 @@ const ProposalOverlay: React.FC<ProposalOverlayProps> = ({
                                 <Box>{getStatusIcon(p.status)}</Box>
                             </Box>
                         ))}
+                        <Box key={2} sx={{ textAlign: "center", minWidth: 90, display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center" }}>
+                            <Avatar
+                                src={`${import.meta.env.VITE_API_BASE_URL}/images/marija.jpg`}
+                                sx={{ width: 80, height: 80, mb: 1 }}
+                            >
+                                Marija
+                            </Avatar>
+                            <Typography>MPE</Typography>
+                            <Box>{getStatusIcon('PENDING')}</Box>
+                        </Box>
                     </Stack>
                 </DialogContent>
 

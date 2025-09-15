@@ -16,8 +16,50 @@ const AdminPage = () => {
         setRestaurants([
             {
                 id: 1,
-                name: "Pasta House",
-                city: "Rome",
+                name: "Amigos",
+                city: "Skopje",
+                imageUrl: "https://placehold.co/200",
+                shifts: [{ id: 1, name: "Lunch", maxGuests: 20 }],
+                categories: [
+                    {
+                        id: 1,
+                        name: "Pasta",
+                        meals: [{ id: 1, name: "Carbonara", description: "Classic Roman pasta" }]
+                    }
+                ]
+            },
+            {
+                id: 2,
+                name: "Forza",
+                city: "Skopje",
+                imageUrl: "https://placehold.co/200",
+                shifts: [{ id: 1, name: "Lunch", maxGuests: 20 }],
+                categories: [
+                    {
+                        id: 1,
+                        name: "Pasta",
+                        meals: [{ id: 1, name: "Carbonara", description: "Classic Roman pasta" }]
+                    }
+                ]
+            },
+            {
+                id: 1,
+                name: "Enriko",
+                city: "Skopje",
+                imageUrl: "https://placehold.co/200",
+                shifts: [{ id: 1, name: "Lunch", maxGuests: 20 }],
+                categories: [
+                    {
+                        id: 1,
+                        name: "Pasta",
+                        meals: [{ id: 1, name: "Carbonara", description: "Classic Roman pasta" }]
+                    }
+                ]
+            },
+            {
+                id: 1,
+                name: "Revija",
+                city: "Skopje",
                 imageUrl: "https://placehold.co/200",
                 shifts: [{ id: 1, name: "Lunch", maxGuests: 20 }],
                 categories: [
@@ -29,7 +71,7 @@ const AdminPage = () => {
                 ]
             }
         ]);
-        setCities([{ id: 1, name: "Rome" }, { id: 2, name: "Paris" }]);
+        setCities([{ id: 1, name: "Skopje" }, { id: 2, name: "Bitola" }, {id: 3, name: "Ohrid" }]);
     }, []);
 
     const handleTabChange = (_: any, newValue: number) => setTab(newValue);

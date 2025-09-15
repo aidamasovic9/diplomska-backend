@@ -33,15 +33,15 @@ public class DinnerProposal {
   @Column(name = "ID", unique = true, nullable = false, precision = 19)
   private Long id;
 
-  @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "INITIATOR_USER_ID", nullable = false)
   private User initiator;
 
-  @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "RESTAURANT_ID", nullable = false)
   private Restaurant restaurant;
 
-  @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "SHIFT_ID", nullable = false)
   private Shift shift;
 

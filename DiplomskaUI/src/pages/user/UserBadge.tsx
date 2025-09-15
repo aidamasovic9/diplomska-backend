@@ -90,14 +90,12 @@ const UserBadge = () => {
                 transformOrigin={{ horizontal: "right", vertical: "top" }}
                 anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
-                {user.role === "ADMIN" && (
                     <MenuItem onClick={handleAdminClick}>
                         <ListItemIcon>
                             {/* You can put an icon for admin if you want */}
                         </ListItemIcon>
                         Admin
                     </MenuItem>
-                )}
 
                 <Divider />
 

@@ -56,7 +56,7 @@ const Home = () => {
 
     useEffect(() => {
         if (userId) {
-            dispatch(fetchDinnerProposals(userId) as any);
+            dispatch(fetchDinnerProposals('10002') as any);
             dispatch(fetchRestaurants(storedLocation) as any);
             dispatch(fetchMyDinnerProposal(userId) as any);
         }
@@ -69,8 +69,21 @@ const Home = () => {
         console.log(id);
     }
 
-    const handleDelete= (id: string) => {
-        console.log(id);
+    const handleDelete= async (id: string) => {
+        if (userId) {
+            const response = await DinnerProposal.deleteGroupDinnerProposal(userId, id);
+            if (response.status === HttpStatusCode.Ok) {
+                dispatch(fetchDinnerProposals(userId) as any);
+                setMessage("Dinner proposal successfully deleted.");
+                setSeverity('success');
+                setShowSnackbarMessage(true);
+                setOpenProposalOverlay(false);
+            } else {
+                setMessage("Failed to delete the proposal. Please try again.");
+                setSeverity('error');
+                setShowSnackbarMessage(true);
+            }
+        }
     }
 
     const handleAccept = async (id: string) => {
@@ -116,7 +129,7 @@ const Home = () => {
                     onClick={() => setIsOverlayOpen(true)}
                     style={{
                         position: 'fixed',      // fixed position relative to viewport
-                        bottom: '150px',         // distance from bottom
+                        bottom: '250px',         // distance from bottom
                         left: '20px',           // distance from left
                         zIndex: 1000,           // make sure it stays above other content
                         padding: '12px 20px',
